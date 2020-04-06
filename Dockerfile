@@ -103,7 +103,7 @@ WORKDIR /app
 
 USER superset
 
-HEALTHCHECK CMD ["curl", "-f", "http://localhost:8088/health"]
+HEALTHCHECK CMD ["curl", "-f", "http://localhost:8080/health"]
 
 EXPOSE ${SUPERSET_PORT}
 
