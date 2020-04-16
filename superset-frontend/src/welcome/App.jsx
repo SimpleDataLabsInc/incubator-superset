@@ -17,11 +17,11 @@
  * under the License.
  */
 import React from 'react';
-import { hot } from 'react-hot-loader/root';
+import {hot} from 'react-hot-loader/root';
 import thunk from 'redux-thunk';
-import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
-import { Provider } from 'react-redux';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom';
+import {createStore, applyMiddleware, compose, combineReducers} from 'redux';
+import {Provider} from 'react-redux';
+import {BrowserRouter as Router, Switch, Route} from 'react-router-dom';
 
 import Menu from 'src/components/Menu/Menu';
 import DashboardList from 'src/views/dashboardList/DashboardList';
@@ -29,7 +29,7 @@ import ChartList from 'src/views/chartList/ChartList';
 import DatasetList from 'src/views/datasetList/DatasetList';
 
 import messageToastReducer from '../messageToasts/reducers';
-import { initEnhancer } from '../reduxUtils';
+import {initEnhancer} from '../reduxUtils';
 import setupApp from '../setup/setupApp';
 import Welcome from './Welcome';
 import ToastPresenter from '../messageToasts/containers/ToastPresenter';
@@ -38,38 +38,38 @@ setupApp();
 
 const container = document.getElementById('app');
 const bootstrap = JSON.parse(container.getAttribute('data-bootstrap'));
-const user = { ...bootstrap.user };
-const menu = { ...bootstrap.common.menu_data };
+const user = {...bootstrap.user};
+const menu = {...bootstrap.common.menu_data};
 
 const store = createStore(
-  combineReducers({
-    messageToasts: messageToastReducer,
-  }),
-  {},
-  compose(applyMiddleware(thunk), initEnhancer(false)),
+    combineReducers({
+        messageToasts: messageToastReducer,
+    }),
+    {},
+    compose(applyMiddleware(thunk), initEnhancer(false)),
 );
 
 const App = () => (
-  <Provider store={store}>
-    <Router>
-      <Menu data={menu} />
-      <Switch>
-        <Route path="/superset/welcome/">
-          <Welcome user={user} />
-        </Route>
-        <Route path="/dashboard/list/">
-          <DashboardList user={user} />
-        </Route>
-        <Route path="/chart/list/">
-          <ChartList user={user} />
-        </Route>
-        <Route path="/tablemodelview/list/">
-          <DatasetList user={user} />
-        </Route>
-      </Switch>
-      <ToastPresenter />
-    </Router>
-  </Provider>
+    <Provider store={store}>
+        <Router>
+            <Menu data={menu}/>
+            <Switch>
+                <Route path="/superset/welcome/">
+                    <Welcome user={user}/>
+                </Route>
+                <Route path="/dashboard/list/">
+                    <DashboardList user={user}/>
+                </Route>
+                <Route path="/chart/list/">
+                    <ChartList user={user}/>
+                </Route>
+                <Route path="/tablemodelview/list/">
+                    <DatasetList user={user}/>
+                </Route>
+            </Switch>
+            <ToastPresenter/>
+        </Router>
+    </Provider>
 );
 
 export default hot(App);
