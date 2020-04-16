@@ -453,4 +453,4 @@ class HiveEngineSpec(PrestoEngineSpec):
         """
         df = database.get_df("SHOW FUNCTIONS")
         print(df)
-        return df[0].tolist()
+        return df.function.tolist()
