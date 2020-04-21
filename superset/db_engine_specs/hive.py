@@ -451,4 +451,4 @@ class HiveEngineSpec(PrestoEngineSpec):
         :param database: The database to get functions for
         :return: A list of function names useable in the database
         """
-        return database.get_df("SHOW FUNCTIONS")["tab_name"].tolist()
+        return database.get_df("SHOW FUNCTIONS").function.tolist()
