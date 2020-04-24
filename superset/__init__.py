@@ -15,7 +15,7 @@
 # specific language governing permissions and limitations
 # under the License.
 """Package's main module!"""
-from flask import current_app, Flask
+from flask import current_app, Flask, url_for
 from werkzeug.local import LocalProxy
 
 from superset.app import create_app
@@ -51,3 +51,21 @@ results_backend_use_msgpack = LocalProxy(
     lambda: results_backend_manager.should_use_msgpack
 )
 tables_cache = LocalProxy(lambda: cache_manager.tables_cache)
+
+
+def has_no_empty_params(rule):
+    defaults = rule.defaults if rule.defaults is not None else ()
+    arguments = rule.arguments if rule.arguments is not None else ()
+    return len(defaults) >= len(arguments)
+
+
+@app.route("/site-map")
+def site_map():
+    links = []
+    for rule in app.url_map.iter_rules():
+        # Filter out rules we can't navigate to in a browser
+        # and rules that require parameters
+        if "GET" in rule.methods and has_no_empty_params(rule):
+            url = url_for(rule.endpoint, **(rule.defaults or {}))
+            links.append((url, rule.endpoint))
+    # links is now a list of url, endpoint tuples
