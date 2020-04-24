@@ -17,6 +17,7 @@
 
 import logging
 import os
+import urllib
 
 import wtforms_json
 from flask import Flask, redirect, url_for
@@ -79,13 +80,24 @@ class SupersetIndexView(IndexView):
     @expose("/site-map")
     def site_map(self):
         links = []
+        output = []
         for rule in appbuilder.app.url_map.iter_rules():
             # Filter out rules we can't navigate to in a browser
             # and rules that require parameters
-            if "GET" in rule.methods and self.has_no_empty_params(rule):
-                url = url_for(rule.endpoint, **(rule.defaults or {}))
-                links.append((url, rule.endpoint))
+            # if "GET" in rule.methods and self.has_no_empty_params(rule):
+            #     url = url_for(rule.endpoint, **(rule.defaults or {}))
+            #     links.append((url, rule.endpoint))
+            options = {}
+            for arg in rule.arguments:
+                options[arg] = "[{0}]".format(arg)
+
+            methods = ','.join(rule.methods)
+            url = url_for(rule.endpoint, **options)
+            line = urllib.unquote("{:50s} {:20s} {}".format(rule.endpoint, methods, url))
+            output.append(line)
         # links is now a list of url, endpoint tuples
+        for line in sorted(output):
+            print(line)
 
 
 
