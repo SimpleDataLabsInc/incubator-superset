@@ -19,7 +19,7 @@ import logging
 import os
 
 import wtforms_json
-from flask import Flask, redirect
+from flask import Flask, redirect, url_for
 from flask_appbuilder import expose, IndexView
 from flask_babel import gettext as __, lazy_gettext as _
 from flask_compress import Compress
@@ -70,6 +70,22 @@ class SupersetIndexView(IndexView):
     @expose("/")
     def index(self):
         return redirect("/superset/welcome")
+
+    def has_no_empty_params(self, rule):
+        defaults = rule.defaults if rule.defaults is not None else ()
+        arguments = rule.arguments if rule.arguments is not None else ()
+        return len(defaults) >= len(arguments)
+
+    @expose("/site-map")
+    def site_map(self):
+        links = []
+        for rule in appbuilder.app.url_map.iter_rules():
+            # Filter out rules we can't navigate to in a browser
+            # and rules that require parameters
+            if "GET" in rule.methods and self.has_no_empty_params(rule):
+                url = url_for(rule.endpoint, **(rule.defaults or {}))
+                links.append((url, rule.endpoint))
+        # links is now a list of url, endpoint tuples
 
 
 
