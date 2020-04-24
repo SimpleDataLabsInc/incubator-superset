@@ -93,7 +93,7 @@ class SupersetIndexView(IndexView):
 
             methods = ','.join(rule.methods)
             url = url_for(rule.endpoint, **options)
-            line = urllib.unquote("{:50s} {:20s} {}".format(rule.endpoint, methods, url))
+            line = "{:50s} {:20s} {}".format(rule.endpoint, methods, url)
             output.append(line)
         # links is now a list of url, endpoint tuples
         for line in sorted(output):
