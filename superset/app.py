@@ -92,12 +92,16 @@ class SupersetIndexView(IndexView):
                 options[arg] = "[{0}]".format(arg)
 
             methods = ','.join(rule.methods)
-            url = "%s, %s" % (rule.endpoint, options)
+            if len(options) == 0:
+                url = url_for(rule.endpoint, **options)
+            else:
+                url = "%s, %s" % (rule.endpoint, options)
             line = "{:50s} {:20s} {}".format(rule.endpoint, methods, url)
             output.append(line)
         # links is now a list of url, endpoint tuples
         for line in sorted(output):
             print(line)
+        return sorted(output)
 
 
 
