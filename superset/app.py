@@ -104,7 +104,6 @@ class SupersetIndexView(IndexView):
         return sorted(output)
 
 
-
 class SupersetAppInitializer:
     def __init__(self, app: Flask) -> None:
         super().__init__()

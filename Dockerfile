@@ -73,7 +73,7 @@ ENV LANG=C.UTF-8 \
     FLASK_APP="superset.app:create_app()" \
     PYTHONPATH="/app/pythonpath" \
     SUPERSET_HOME="/app/superset_home" \
-    SUPERSET_PORT=8080
+    SUPERSET_PORT_NUMBER=8080
 
 RUN useradd --user-group --no-create-home --no-log-init --shell /bin/bash superset \
         && mkdir -p ${SUPERSET_HOME} ${PYTHONPATH} \
@@ -105,7 +105,7 @@ USER superset
 
 HEALTHCHECK CMD ["curl", "-f", "http://localhost:8080/health"]
 
-EXPOSE ${SUPERSET_PORT}
+EXPOSE ${SUPERSET_PORT_NUMBER}
 
 ENTRYPOINT ["/usr/bin/docker-entrypoint.sh"]
 

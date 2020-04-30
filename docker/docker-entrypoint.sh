@@ -21,7 +21,7 @@ if [ "${#}" -ne 0 ]; then
     exec "${@}"
 else
     gunicorn \
-        --bind  "0.0.0.0:${SUPERSET_PORT}" \
+        --bind  "0.0.0.0:${SUPERSET_PORT_NUMBER}" \
         --access-logfile '-' \
         --error-logfile '-' \
         --workers 1 \
