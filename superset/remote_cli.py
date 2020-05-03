@@ -57,17 +57,28 @@ class SupersetAppenderHandler(asyncore.dispatcher_with_send):
         v = p.communicate()
         return v, p.returncode
 
+    def encodeInMultiples(self, msg):
+        length = len(msg)
+        remainder = length % self.max_length
+        div = int(length / self.max_length)
+        multiple = div * self.max_length
+        parts = msg[:multiple]
+        rest = msg[multiple:]
+        return parts + (self.fmt % rest)
+
     def handle_read(self):
         msg = self.recv(self.max_length)
         print("Received: ", msg)
         msg = msg.strip()#confjson.get('RATE', None))
         cmd = msg.decode("utf8")
         try:
-            (out, err) = self.execute(cmd)
+            ((out, err), code) = self.execute(cmd)
+            full = "OUT: " + out.decode("utf8") + ", ERROR: " + err.decode("utf8")
         except Exception as e:
             print(e)
-        self.out_buffer = (self.fmt % cmd).encode("utf8")#msg.upper().decode("utf8")).encode("utf8")
-        # self.out_buffer += ' server recieve: {}'.format(time.time()).encode("utf8")
+            full = "%s" % e
+        full = self.encodeInMultiples(full)
+        self.out_buffer = full.encode("utf8")
         print("Sending:  ", self.out_buffer)
         if not self.out_buffer:
             self.close()
