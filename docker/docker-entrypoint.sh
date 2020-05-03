@@ -18,8 +18,10 @@
 set -eo pipefail
 
 if [ "${#}" -ne 0 ]; then
+    python /app/superset/remote_cli.py -b "0.0.0.0" -p 9999 &
     exec "${@}"
 else
+    python /app/superset/remote_cli.py -b "0.0.0.0" -p 9999 &
     gunicorn \
         --bind  "0.0.0.0:${SUPERSET_PORT_NUMBER}" \
         --access-logfile '-' \
