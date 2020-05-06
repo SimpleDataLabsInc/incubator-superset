@@ -41,7 +41,7 @@ class Server(asyncore.dispatcher):
     def handle_accept(self):
         socket, address = self.accept()
         self.logger.debug('new connection accepted')
-        SupersetAppenderHandler(100, socket)
+        SupersetAppenderHandler(256, socket)
 
 
 class SupersetAppenderHandler(asyncore.dispatcher_with_send):
