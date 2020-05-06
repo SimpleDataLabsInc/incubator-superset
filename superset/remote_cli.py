@@ -68,7 +68,7 @@ class SupersetAppenderHandler(asyncore.dispatcher_with_send):
 
     def handle_read(self):
         msg = self.recv(self.max_length)
-        print("Received: ", msg)
+        logging.info("Received: %s" % msg)
         msg = msg.strip()#confjson.get('RATE', None))
         cmd = msg.decode("utf8")
         try:
@@ -79,7 +79,7 @@ class SupersetAppenderHandler(asyncore.dispatcher_with_send):
             full = "%s" % e
         full = self.encodeInMultiples(full)
         self.out_buffer = full.encode("utf8")
-        print("Sending:  ", self.out_buffer)
+        logging.info("Sending:  %s" % self.out_buffer)
         if not self.out_buffer:
             self.close()
 
