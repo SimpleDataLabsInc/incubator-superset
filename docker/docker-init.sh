@@ -36,11 +36,11 @@ EOF
 # Create an admin user
 echo_step "1" "Starting" "Setting up admin user ( admin / admin )"
 superset fab create-admin \
-              --username admin \
+              --username sdl \
               --firstname Superset \
               --lastname Admin \
-              --email admin@superset.com \
-              --password admin
+              --email info@prophecy.io \
+              --password sdl
 echo_step "1" "Complete" "Setting up admin user"
 
 # Initialize the database
@@ -59,3 +59,5 @@ fi
 echo_step "4" "Starting" "Setting up roles and perms"
 superset init
 echo_step "4" "Complete" "Setting up roles and perms"
+
+touch /app/common/SUPERSET
