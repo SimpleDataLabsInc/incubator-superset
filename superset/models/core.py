@@ -533,6 +533,7 @@ class Database(
         :param force: whether to force refresh the cache
         :return: schema list
         """
+        logger.info("DB: %s" % self.db_engine_spec)
         return self.db_engine_spec.get_schema_names(self.inspector)
 
     @property
