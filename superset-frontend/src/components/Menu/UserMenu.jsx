@@ -35,7 +35,8 @@ export default function UserMenu({
   versionSha,
 }) {
   return (
-    <NavDropdown
+      null
+    /*<NavDropdown
       id="user-menu-dropwn"
       title={
         <>
@@ -57,7 +58,7 @@ export default function UserMenu({
           {versionSha && <div>SHA: {versionSha}</div>}
         </li>
       )}
-    </NavDropdown>
+    </NavDropdown>*/
   );
 }
 

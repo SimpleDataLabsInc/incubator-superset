@@ -25,7 +25,7 @@ import Menu from '../../../src/components/Menu/Menu';
 const defaultProps = {
   data: {
     menu: [
-      {
+      /*{
         name: 'Security',
         icon: 'fa-cogs',
         label: 'Security',
@@ -37,8 +37,8 @@ const defaultProps = {
             url: '/users/list/',
           },
         ],
-      },
-      {
+      },*/
+     /* {
         name: 'Sources',
         icon: 'fa-table',
         label: 'Sources',
@@ -63,17 +63,17 @@ const defaultProps = {
         icon: 'fa-bar-chart',
         label: 'Charts',
         url: '/chart/list/',
-      },
-      {
+      },*/
+      /*{
         name: 'Dashboards',
         icon: 'fa-dashboard',
         label: 'Dashboards',
         url: '/dashboard/list/',
-      },
+      },*/
     ],
     brand: {
       path: '/superset/profile/admin/',
-      icon: '/static/assets/images/superset-logo@2x.png',
+      icon: '',
       alt: 'Superset',
     },
     navbar_right: {

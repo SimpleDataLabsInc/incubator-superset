@@ -51,70 +51,70 @@ const propTypes = {
 };
 
 export default function Menu({
-  data: { menu, brand, navbar_right: navbarRight },
-}) {
-  return (
-    <header className="top" id="main-menu">
-      <Navbar inverse fluid staticTop role="navigation">
-        <Navbar.Header>
-          <Navbar.Brand>
-            <a className="navbar-brand" href={brand.path}>
-              <img width="126" src={brand.icon} alt={brand.alt} />
-            </a>
-          </Navbar.Brand>
-          <Navbar.Toggle />
-        </Navbar.Header>
-        <Nav>
-          {menu.map((item, index) => (
-            <MenuObject {...item} key={item.label} index={index + 1} />
-          ))}
-        </Nav>
-        <Nav className="navbar-right">
-          {!navbarRight.user_is_anonymous && <NewMenu />}
-          {navbarRight.documentation_url && (
-            <NavItem
-              href={navbarRight.documentation_url}
-              target="_blank"
-              title="Documentation"
-            >
-              <i className="fa fa-question" />
-              &nbsp;
-            </NavItem>
-          )}
-          {navbarRight.bug_report_url && (
-            <NavItem
-              href={navbarRight.bug_report_url}
-              target="_blank"
-              title="Report a Bug"
-            >
-              <i className="fa fa-bug" />
-              &nbsp;
-            </NavItem>
-          )}
-          {navbarRight.show_language_picker && (
-            <LanguagePicker
-              locale={navbarRight.locale}
-              languages={navbarRight.languages}
-            />
-          )}
-          {!navbarRight.user_is_anonymous && (
-            <UserMenu
-              userInfoUrl={navbarRight.user_info_url}
-              userLogoutUrl={navbarRight.user_logout_url}
-              versionString={navbarRight.version_string}
-              versionSha={navbarRight.version_sha}
-            />
-          )}
-          {navbarRight.user_is_anonymous && (
-            <NavItem href={navbarRight.user_login_url}>
-              <i className="fa fa-fw fa-sign-in" />
-              {t('Login')}
-            </NavItem>
-          )}
-        </Nav>
-      </Navbar>
-    </header>
-  );
+                                 data: {menu, brand, navbar_right: navbarRight},
+                             }) {
+    return (
+        <header className="top" id="main-menu">
+            <Navbar inverse fluid staticTop role="navigation">
+                <Navbar.Header>
+                    <Navbar.Brand>
+                        <a className="navbar-brand" href={brand.path}>
+                            <img width="126" src={brand.icon} alt={brand.alt}/>
+                        </a>
+                    </Navbar.Brand>
+                    <Navbar.Toggle/>
+                </Navbar.Header>
+                <Nav>
+                    {menu.map((item, index) => (
+                        <MenuObject {...item} key={item.label} index={index + 1}/>
+                    ))}
+                </Nav>
+                <Nav className="navbar-right">
+                    {!navbarRight.user_is_anonymous && <NewMenu/>}
+                   {/* {navbarRight.documentation_url && (
+                        <NavItem
+                            href={navbarRight.documentation_url}
+                            target="_blank"
+                            title="Documentation"
+                        >
+                            <i className="fa fa-question"/>
+                            &nbsp;
+                        </NavItem>
+                    )}*/}
+                    {/*{navbarRight.bug_report_url && (
+                        <NavItem
+                            href={navbarRight.bug_report_url}
+                            target="_blank"
+                            title="Report a Bug"
+                        >
+                            <i className="fa fa-bug"/>
+                            &nbsp;
+                        </NavItem>
+                    )}
+                    {navbarRight.show_language_picker && (
+                        <LanguagePicker
+                            locale={navbarRight.locale}
+                            languages={navbarRight.languages}
+                        />
+                    )}
+                    {!navbarRight.user_is_anonymous && (
+                        <UserMenu
+                            userInfoUrl={navbarRight.user_info_url}
+                            userLogoutUrl={navbarRight.user_logout_url}
+                            versionString={navbarRight.version_string}
+                            versionSha={navbarRight.version_sha}
+                        />
+                    )}
+                    {navbarRight.user_is_anonymous && (
+                        <NavItem href={navbarRight.user_login_url}>
+                            <i className="fa fa-fw fa-sign-in"/>
+                            {t('Login')}
+                        </NavItem>
+                    )}*/}
+                </Nav>
+            </Navbar>
+        </header>
+    );
 }
 
 Menu.propTypes = propTypes;
