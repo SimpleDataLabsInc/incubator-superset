@@ -220,24 +220,24 @@ class SupersetAppInitializer:
         # Setup regular views
         #
 
-        appbuilder.add_view(
+        """ appbuilder.add_view(
             DashboardModelView,
             "Dashboards",
             label=__("Dashboards"),
             icon="fa-dashboard",
             category="",
             category_icon="",
-        )
+        ) """
 
-        appbuilder.add_view(
+        """ appbuilder.add_view(
             QueryView,
             "Queries",
             label=__("Queries"),
             category="Manage",
             category_label=__("Manage"),
             icon="fa-search",
-        )
-        if self.config["ENABLE_ROW_LEVEL_SECURITY"]:
+        ) """
+        """ if self.config["ENABLE_ROW_LEVEL_SECURITY"]:
             appbuilder.add_view(
                 RowLevelSecurityFiltersModelView,
                 "Row Level Security Filters",
@@ -245,7 +245,7 @@ class SupersetAppInitializer:
                 category="Security",
                 category_label=__("Security"),
                 icon="fa-lock",
-            )
+            ) """
 
         #
         # Setup views with no menu
@@ -293,7 +293,7 @@ class SupersetAppInitializer:
         #
         # Conditionally setup log views
         #
-        if self.config["FAB_ADD_SECURITY_VIEWS"] and self.config["SUPERSET_LOG_VIEW"]:
+        """ if self.config["FAB_ADD_SECURITY_VIEWS"] and self.config["SUPERSET_LOG_VIEW"]:
             appbuilder.add_api(LogRestApi)
             appbuilder.add_view(
                 LogModelView,
@@ -303,12 +303,12 @@ class SupersetAppInitializer:
                 category_label=__("Security"),
                 icon="fa-list-ol",
             )
-
+ """
         #
         # Conditionally setup email views
         #
         if self.config["ENABLE_SCHEDULED_EMAIL_REPORTS"]:
-            appbuilder.add_separator("Manage")
+            """ appbuilder.add_separator("Manage")
             appbuilder.add_view(
                 DashboardEmailScheduleView,
                 "Dashboard Email Schedules",
@@ -324,12 +324,12 @@ class SupersetAppInitializer:
                 category="Manage",
                 category_label=__("Manage"),
                 icon="fa-search",
-            )
+            ) """
 
         #
         # Conditionally add Access Request Model View
         #
-        if self.config["ENABLE_ACCESS_REQUEST"]:
+        """ if self.config["ENABLE_ACCESS_REQUEST"]:
             appbuilder.add_view(
                 AccessRequestsModelView,
                 "Access requests",
@@ -337,7 +337,7 @@ class SupersetAppInitializer:
                 category="Security",
                 category_label=__("Security"),
                 icon="fa-table",
-            )
+            ) """
 
         #
         # Conditionally setup Druid Views
