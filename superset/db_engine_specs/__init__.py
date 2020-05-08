@@ -28,6 +28,7 @@ at all. The classes here will use a common interface to specify all this.
 The general idea is to use static classes and an inheritance scheme.
 """
 import inspect
+import logging
 import pkgutil
 from importlib import import_module
 from pathlib import Path
@@ -35,6 +36,7 @@ from typing import Dict, Type
 
 from superset.db_engine_specs.base import BaseEngineSpec
 
+logger = logging.getLogger(__name__)
 engines: Dict[str, Type[BaseEngineSpec]] = {}
 
 for (_, name, _) in pkgutil.iter_modules([Path(__file__).parent]):  # type: ignore
@@ -48,4 +50,5 @@ for (_, name, _) in pkgutil.iter_modules([Path(__file__).parent]):  # type: igno
             and issubclass(attribute, BaseEngineSpec)
             and attribute.engine != ""
         ):
+            logger.info("Found: %s, %s" % (attribute.engine, attribute))
             engines[attribute.engine] = attribute

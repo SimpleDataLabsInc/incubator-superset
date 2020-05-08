@@ -44,6 +44,8 @@ from superset.extensions import (
 from superset.security import SupersetSecurityManager
 from superset.utils.core import pessimistic_connection_handling
 from superset.utils.log import DBEventLogger, get_event_logger_from_cfg_value
+from sqlalchemy.dialects import registry
+
 
 logger = logging.getLogger(__name__)
 
