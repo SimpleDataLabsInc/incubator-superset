@@ -1064,7 +1064,9 @@ class Superset(BaseSupersetView):
                 cache_timeout=database.schema_cache_timeout,
                 force=force_refresh,
             )
+            logger.info("found schema: %s" % schemas)
             schemas = security_manager.schemas_accessible_by_user(database, schemas)
+            logger.info("found schema: %s" % schemas)
         else:
             schemas = []
 
