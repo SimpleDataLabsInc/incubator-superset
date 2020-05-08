@@ -44,12 +44,20 @@ from superset.extensions import (
 from superset.security import SupersetSecurityManager
 from superset.utils.core import pessimistic_connection_handling
 from superset.utils.log import DBEventLogger, get_event_logger_from_cfg_value
+from sqlalchemy.dialects import registry
+
 
 logger = logging.getLogger(__name__)
 
 
 def create_app():
     app = Flask(__name__)
+
+    try:
+        from pyhive.sqlalchemy_hive import HiveDialect
+        registry.register("tspark", "db_engines", "SparkSqlDialect")
+    except ImportError as e:
+        logger.info("Ignoring Spark Dialect since pyhive is not installed")
 
     try:
         # Allow user to override our config completely

@@ -534,11 +534,7 @@ class Database(
         :param force: whether to force refresh the cache
         :return: schema list
         """
-        logger.info("DB: %s" % self.db_engine_spec)
-        schemas = self.db_engine_spec.get_schema_names(self.inspector)
-        if type(self.db_engine_spec) == HiveEngineSpec:
-            schemas = ["global_temp"] + schemas
-        return schemas
+        return self.db_engine_spec.get_schema_names(self.inspector)
 
     @property
     def db_engine_spec(self) -> Type[db_engine_specs.BaseEngineSpec]:
