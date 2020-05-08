@@ -79,7 +79,7 @@ def create_app():
 class SupersetIndexView(IndexView):
     @expose("/")
     def index(self):
-        return redirect("/superset/welcome")
+        return redirect("/superset/sqllab")
 
     def has_no_empty_params(self, rule):
         defaults = rule.defaults if rule.defaults is not None else ()
