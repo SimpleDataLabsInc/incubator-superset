@@ -54,12 +54,6 @@ def create_app():
     app = Flask(__name__)
 
     try:
-        from pyhive.sqlalchemy_hive import HiveDialect
-        registry.register("tspark", "db_engines", "SparkSqlDialect")
-    except ImportError as e:
-        logger.info("Ignoring Spark Dialect since pyhive is not installed")
-
-    try:
         # Allow user to override our config completely
         config_module = os.environ.get("SUPERSET_CONFIG", "superset.config")
         app.config.from_object(config_module)
