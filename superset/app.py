@@ -219,51 +219,7 @@ class SupersetAppInitializer:
         #
         # Setup regular views
         #
-        appbuilder.add_view(
-            AnnotationLayerModelView,
-            "Annotation Layers",
-            label=__("Annotation Layers"),
-            icon="fa-comment",
-            category="Manage",
-            category_label=__("Manage"),
-            category_icon="",
-        )
-        appbuilder.add_view(
-            AnnotationModelView,
-            "Annotations",
-            label=__("Annotations"),
-            icon="fa-comments",
-            category="Manage",
-            category_label=__("Manage"),
-            category_icon="",
-        )
-        appbuilder.add_view(
-            DatabaseView,
-            "Databases",
-            label=__("Databases"),
-            icon="fa-database",
-            category="Sources",
-            category_label=__("Sources"),
-            category_icon="fa-database",
-        )
-        appbuilder.add_link(
-            "Tables",
-            label=__("Tables"),
-            href="/tablemodelview/list/?_flt_1_is_sqllab_view=y",
-            icon="fa-table",
-            category="Sources",
-            category_label=__("Sources"),
-            category_icon="fa-table",
-        )
-        appbuilder.add_separator("Sources")
-        appbuilder.add_view(
-            SliceModelView,
-            "Charts",
-            label=__("Charts"),
-            icon="fa-bar-chart",
-            category="",
-            category_icon="",
-        )
+
         appbuilder.add_view(
             DashboardModelView,
             "Dashboards",
@@ -272,15 +228,7 @@ class SupersetAppInitializer:
             category="",
             category_icon="",
         )
-        appbuilder.add_view(
-            CssTemplateModelView,
-            "CSS Templates",
-            label=__("CSS Templates"),
-            icon="fa-css3",
-            category="Manage",
-            category_label=__("Manage"),
-            category_icon="",
-        )
+
         appbuilder.add_view(
             QueryView,
             "Queries",
@@ -313,8 +261,8 @@ class SupersetAppInitializer:
             appbuilder.add_view_no_menu(KV)
 
         appbuilder.add_view_no_menu(R)
-        appbuilder.add_view_no_menu(SavedQueryView)
-        appbuilder.add_view_no_menu(SavedQueryViewApi)
+        #appbuilder.add_view_no_menu(SavedQueryView)
+        #appbuilder.add_view_no_menu(SavedQueryViewApi)
         appbuilder.add_view_no_menu(SliceAsync)
         appbuilder.add_view_no_menu(SqlLab)
         appbuilder.add_view_no_menu(SqlMetricInlineView)
@@ -330,15 +278,7 @@ class SupersetAppInitializer:
         #
         # Add links
         #
-        appbuilder.add_link(
-            "Import Dashboards",
-            label=__("Import Dashboards"),
-            href="/superset/import_dashboards",
-            icon="fa-cloud-upload",
-            category="Manage",
-            category_label=__("Manage"),
-            category_icon="fa-wrench",
-        )
+
         appbuilder.add_link(
             "SQL Editor",
             label=_("SQL Editor"),
@@ -348,30 +288,7 @@ class SupersetAppInitializer:
             category="SQL Lab",
             category_label=__("SQL Lab"),
         )
-        appbuilder.add_link(
-            __("Saved Queries"),
-            href="/sqllab/my_queries/",
-            icon="fa-save",
-            category="SQL Lab",
-        )
-        appbuilder.add_link(
-            "Query Search",
-            label=_("Query Search"),
-            href="/superset/sqllab#search",
-            icon="fa-search",
-            category_icon="fa-flask",
-            category="SQL Lab",
-            category_label=__("SQL Lab"),
-        )
-        appbuilder.add_link(
-            "Upload a CSV",
-            label=__("Upload a CSV"),
-            href="/csvtodatabaseview/form",
-            icon="fa-upload",
-            category="Sources",
-            category_label=__("Sources"),
-            category_icon="fa-wrench",
-        )
+
 
         #
         # Conditionally setup log views

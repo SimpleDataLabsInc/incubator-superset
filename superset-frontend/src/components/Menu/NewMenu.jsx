@@ -41,7 +41,7 @@ export default function NewMenu() {
         <li>
           <a href="/superset/sqllab">
             <span className="fa fa-fw fa-search" />
-            {t('SQL Query')} te1
+            {t('SQL Query')}
           </a>
         </li>
         {/*<li>

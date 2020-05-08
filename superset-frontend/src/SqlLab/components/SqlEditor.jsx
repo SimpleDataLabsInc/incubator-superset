@@ -38,10 +38,10 @@ import Button from '../../components/Button';
 import LimitControl from './LimitControl';
 import TemplateParamsEditor from './TemplateParamsEditor';
 import SouthPane from './SouthPane';
-import SaveQuery from './SaveQuery';
+//import SaveQuery from './SaveQuery';
 import ScheduleQueryButton from './ScheduleQueryButton';
 import EstimateQueryCostButton from './EstimateQueryCostButton';
-import ShareSqlLabQuery from './ShareSqlLabQuery';
+//import ShareSqlLabQuery from './ShareSqlLabQuery';
 import Timer from '../../components/Timer';
 import Hotkeys from '../../components/Hotkeys';
 import SqlEditorLeftBar from './SqlEditorLeftBar';
@@ -475,7 +475,7 @@ class SqlEditor extends React.PureComponent {
                 />
               </span>
             )}
-            <span>
+           {/* <span>
               <SaveQuery
                 query={qe}
                 defaultLabel={
@@ -488,7 +488,7 @@ class SqlEditor extends React.PureComponent {
             </span>
             <span>
               <ShareSqlLabQuery queryEditor={qe} />
-            </span>
+            </span>*/}
             {ctasControls && <span>{ctasControls}</span>}
             <span>
               <LimitControl

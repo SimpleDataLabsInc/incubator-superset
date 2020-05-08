@@ -306,12 +306,12 @@ class TabbedSqlEditors extends React.PureComponent {
             </div>
             {t('Rename tab')}
           </MenuItem>
-          <MenuItem eventKey="3" onClick={this.toggleLeftBar}>
+          {/*<MenuItem eventKey="3" onClick={this.toggleLeftBar}>
             <div className="icon-container">
               <i className="fa fa-cogs" />
             </div>
             {this.state.hideLeftBar ? t('Expand tool bar') : t('Hide tool bar')}
-          </MenuItem>
+          </MenuItem>*/}
           <MenuItem
             eventKey="4"
             onClick={() => this.removeAllOtherQueryEditors(qe)}
