@@ -53,6 +53,7 @@ from sqlalchemy_utils import EncryptedType
 
 from superset import app, db_engine_specs, is_feature_enabled, security_manager
 from superset.db_engine_specs.base import TimeGrain
+from superset.db_engine_specs.hive import HiveEngineSpec
 from superset.models.dashboard import Dashboard
 from superset.models.helpers import AuditMixinNullable, ImportMixin
 from superset.models.tags import DashboardUpdater, FavStarUpdater
@@ -534,7 +535,10 @@ class Database(
         :return: schema list
         """
         logger.info("DB: %s" % self.db_engine_spec)
-        return self.db_engine_spec.get_schema_names(self.inspector)
+        schemas = self.db_engine_spec.get_schema_names(self.inspector)
+        if type(self.db_engine_spec) == HiveEngineSpec:
+            schemas = ["global_temp"] + schemas
+        return schemas
 
     @property
     def db_engine_spec(self) -> Type[db_engine_specs.BaseEngineSpec]:
