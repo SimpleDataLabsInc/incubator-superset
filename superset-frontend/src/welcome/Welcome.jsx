@@ -61,7 +61,7 @@ export default function Welcome({ user }) {
         onSelect={setActiveTab}
         id="uncontrolled-tab-example"
       >
-        <Tab eventKey="all" title={t('Dashboards')}>
+      {/*  <Tab eventKey="all" title={t('Dashboards')}>
           <Panel>
             <Panel.Body>
               <Row>
@@ -83,7 +83,7 @@ export default function Welcome({ user }) {
               <DashboardTable search={searchQuery} />
             </Panel.Body>
           </Panel>
-        </Tab>
+        </Tab>*/}
         <Tab eventKey="recent" title={t('Recently Viewed')}>
           <Panel>
             <Panel.Body>
@@ -97,7 +97,7 @@ export default function Welcome({ user }) {
             </Panel.Body>
           </Panel>
         </Tab>
-        <Tab eventKey="favorites" title={t('Favorites')}>
+        {/*<Tab eventKey="favorites" title={t('Favorites')}>
           <Panel>
             <Panel.Body>
               <Row>
@@ -109,7 +109,7 @@ export default function Welcome({ user }) {
               <Favorites user={user} />
             </Panel.Body>
           </Panel>
-        </Tab>
+        </Tab>*/}
       </Tabs>
     </div>
   );
