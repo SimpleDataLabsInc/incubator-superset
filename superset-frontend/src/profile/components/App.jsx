@@ -41,35 +41,7 @@ export default function App(props) {
         <Col md={9}>
           <Tabs id="options">
             <Tab
-              eventKey={1}
-              title={
-                <div>
-                  <i className="fa fa-star" /> {t('Favorites')}
-                </div>
-              }
-            >
-              <Panel>
-                <Panel.Body>
-                  <Favorites user={props.user} />
-                </Panel.Body>
-              </Panel>
-            </Tab>
-            <Tab
-              eventKey={2}
-              title={
-                <div>
-                  <i className="fa fa-paint-brush" /> {t('Created Content')}
-                </div>
-              }
-            >
-              <Panel>
-                <Panel.Body>
-                  <CreatedContent user={props.user} />
-                </Panel.Body>
-              </Panel>
-            </Tab>
-            <Tab
-              eventKey={3}
+              eventKey={0}
               title={
                 <div>
                   <i className="fa fa-list" /> {t('Recent Activity')}
@@ -79,20 +51,6 @@ export default function App(props) {
               <Panel>
                 <Panel.Body>
                   <RecentActivity user={props.user} />
-                </Panel.Body>
-              </Panel>
-            </Tab>
-            <Tab
-              eventKey={4}
-              title={
-                <div>
-                  <i className="fa fa-lock" /> {t('Security & Access')}
-                </div>
-              }
-            >
-              <Panel>
-                <Panel.Body>
-                  <Security user={props.user} />
                 </Panel.Body>
               </Panel>
             </Tab>

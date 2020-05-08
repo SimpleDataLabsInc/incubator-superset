@@ -57,11 +57,11 @@ export default function Menu({
         <header className="top" id="main-menu">
             <Navbar inverse fluid staticTop role="navigation">
                 <Navbar.Header>
-                    <Navbar.Brand>
+                    {/*<Navbar.Brand>
                         <a className="navbar-brand" href={brand.path}>
                             <img width="126" src={brand.icon} alt={brand.alt}/>
                         </a>
-                    </Navbar.Brand>
+                    </Navbar.Brand>*/}
                     <Navbar.Toggle/>
                 </Navbar.Header>
                 <Nav>
