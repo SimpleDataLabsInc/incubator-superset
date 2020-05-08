@@ -54,6 +54,13 @@ def create_app():
     app = Flask(__name__)
 
     try:
+        registry.register("tspark", "superset.db_engines.spark", "SparkSqlDialect")
+        logger.info("Registered Spark Sql Dialect")
+    except ImportError as e:
+        logger.info("Ignoring Spark Dialect since pyhive is not installed")
+        pass
+
+    try:
         # Allow user to override our config completely
         config_module = os.environ.get("SUPERSET_CONFIG", "superset.config")
         app.config.from_object(config_module)
@@ -72,7 +79,7 @@ def create_app():
 class SupersetIndexView(IndexView):
     @expose("/")
     def index(self):
-        return redirect("/superset/welcome")
+        return redirect("/superset/sqllab")
 
     def has_no_empty_params(self, rule):
         defaults = rule.defaults if rule.defaults is not None else ()
