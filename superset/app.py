@@ -297,7 +297,15 @@ class SupersetAppInitializer:
             category="SQL Lab",
             category_label=__("SQL Lab"),
         )
-
+        appbuilder.add_link(
+            "Explore",
+            label=_("Explore"),
+            href="/superset/explore",
+            icon="fa-database",
+            category_icon="fa-flask",
+            category="SQL Lab",
+            category_label=__("SQL Lab"),
+        )
 
         #
         # Conditionally setup log views
