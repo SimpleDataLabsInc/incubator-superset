@@ -6,7 +6,7 @@ from superset.db_engine_specs.hive import HiveEngineSpec
 
 
 class DatabricksEngineSpec(HiveEngineSpec):
-    engine = "databricks+pyhive"
+    engine = "databricks"
 
     @classmethod
     def get_schema_names(cls, inspector: Inspector) -> List[str]:
