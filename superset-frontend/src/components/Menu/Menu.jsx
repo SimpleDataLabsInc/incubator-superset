@@ -57,11 +57,11 @@ export default function Menu({
         <header className="top" id="main-menu">
             <Navbar inverse fluid staticTop role="navigation">
                 <Navbar.Header>
-                    {/*<Navbar.Brand>
+                    <Navbar.Brand>
                         <a className="navbar-brand" href={brand.path}>
                             <img width="126" src={brand.icon} alt={brand.alt}/>
                         </a>
-                    </Navbar.Brand>*/}
+                    </Navbar.Brand>
                     <Navbar.Toggle/>
                 </Navbar.Header>
                 <Nav>
@@ -71,7 +71,7 @@ export default function Menu({
                 </Nav>
                 <Nav className="navbar-right">
                     {!navbarRight.user_is_anonymous && <NewMenu/>}
-                   {/* {navbarRight.documentation_url && (
+                    {navbarRight.documentation_url && (
                         <NavItem
                             href={navbarRight.documentation_url}
                             target="_blank"
@@ -80,8 +80,8 @@ export default function Menu({
                             <i className="fa fa-question"/>
                             &nbsp;
                         </NavItem>
-                    )}*/}
-                    {/*{navbarRight.bug_report_url && (
+                    )}
+                    {navbarRight.bug_report_url && (
                         <NavItem
                             href={navbarRight.bug_report_url}
                             target="_blank"
@@ -110,7 +110,7 @@ export default function Menu({
                             <i className="fa fa-fw fa-sign-in"/>
                             {t('Login')}
                         </NavItem>
-                    )}*/}
+                    )}
                 </Nav>
             </Navbar>
         </header>

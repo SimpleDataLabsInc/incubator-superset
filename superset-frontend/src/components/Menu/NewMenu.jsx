@@ -44,18 +44,18 @@ export default function NewMenu() {
             {t('SQL Query')}
           </a>
         </li>
-        {/*<li>
+        <li>
           <a href="/chart/add">
             <span className="fa fa-fw fa-bar-chart" />
             {t('Chart')}
           </a>
-        </li>*/}
-       {/* <li>
+        </li>
+        <li>
           <a href="/dashboard/new/">
             <span className="fa fa-fw fa-dashboard" />
             {t('Dashboard')}
           </a>
-        </li>*/}
+        </li>
       </ul>
     </li>
   );

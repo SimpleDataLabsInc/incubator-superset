@@ -79,7 +79,7 @@ def create_app():
 class SupersetIndexView(IndexView):
     @expose("/")
     def index(self):
-        return redirect("/superset/sqllab")
+        return redirect("/superset/welcome")
 
     def has_no_empty_params(self, rule):
         defaults = rule.defaults if rule.defaults is not None else ()
@@ -228,25 +228,77 @@ class SupersetAppInitializer:
         #
         # Setup regular views
         #
-
-        """ appbuilder.add_view(
+        appbuilder.add_view(
+            AnnotationLayerModelView,
+            "Annotation Layers",
+            label=__("Annotation Layers"),
+            icon="fa-comment",
+            category="Manage",
+            category_label=__("Manage"),
+            category_icon="",
+        )
+        appbuilder.add_view(
+            AnnotationModelView,
+            "Annotations",
+            label=__("Annotations"),
+            icon="fa-comments",
+            category="Manage",
+            category_label=__("Manage"),
+            category_icon="",
+        )
+        appbuilder.add_view(
+            DatabaseView,
+            "Databases",
+            label=__("Databases"),
+            icon="fa-database",
+            category="Sources",
+            category_label=__("Sources"),
+            category_icon="fa-database",
+        )
+        appbuilder.add_link(
+            "Tables",
+            label=__("Tables"),
+            href="/tablemodelview/list/?_flt_1_is_sqllab_view=y",
+            icon="fa-table",
+            category="Sources",
+            category_label=__("Sources"),
+            category_icon="fa-table",
+        )
+        appbuilder.add_separator("Sources")
+        appbuilder.add_view(
+            SliceModelView,
+            "Charts",
+            label=__("Charts"),
+            icon="fa-bar-chart",
+            category="",
+            category_icon="",
+        )
+        appbuilder.add_view(
             DashboardModelView,
             "Dashboards",
             label=__("Dashboards"),
             icon="fa-dashboard",
             category="",
             category_icon="",
-        ) """
-
-        """ appbuilder.add_view(
+        )
+        appbuilder.add_view(
+            CssTemplateModelView,
+            "CSS Templates",
+            label=__("CSS Templates"),
+            icon="fa-css3",
+            category="Manage",
+            category_label=__("Manage"),
+            category_icon="",
+        )
+        appbuilder.add_view(
             QueryView,
             "Queries",
             label=__("Queries"),
             category="Manage",
             category_label=__("Manage"),
             icon="fa-search",
-        ) """
-        """ if self.config["ENABLE_ROW_LEVEL_SECURITY"]:
+        )
+        if self.config["ENABLE_ROW_LEVEL_SECURITY"]:
             appbuilder.add_view(
                 RowLevelSecurityFiltersModelView,
                 "Row Level Security Filters",
@@ -254,7 +306,7 @@ class SupersetAppInitializer:
                 category="Security",
                 category_label=__("Security"),
                 icon="fa-lock",
-            ) """
+            )
 
         #
         # Setup views with no menu
@@ -270,8 +322,8 @@ class SupersetAppInitializer:
             appbuilder.add_view_no_menu(KV)
 
         appbuilder.add_view_no_menu(R)
-        #appbuilder.add_view_no_menu(SavedQueryView)
-        #appbuilder.add_view_no_menu(SavedQueryViewApi)
+        appbuilder.add_view_no_menu(SavedQueryView)
+        appbuilder.add_view_no_menu(SavedQueryViewApi)
         appbuilder.add_view_no_menu(SliceAsync)
         appbuilder.add_view_no_menu(SqlLab)
         appbuilder.add_view_no_menu(SqlMetricInlineView)
@@ -287,7 +339,15 @@ class SupersetAppInitializer:
         #
         # Add links
         #
-
+        appbuilder.add_link(
+            "Import Dashboards",
+            label=__("Import Dashboards"),
+            href="/superset/import_dashboards",
+            icon="fa-cloud-upload",
+            category="Manage",
+            category_label=__("Manage"),
+            category_icon="fa-wrench",
+        )
         appbuilder.add_link(
             "SQL Editor",
             label=_("SQL Editor"),
@@ -297,17 +357,35 @@ class SupersetAppInitializer:
             category="SQL Lab",
             category_label=__("SQL Lab"),
         )
-        """ appbuilder.add_link(
-            __("Explore"),
-            href="/superset/explore/table",
+        appbuilder.add_link(
+            __("Saved Queries"),
+            href="/sqllab/my_queries/",
             icon="fa-save",
             category="SQL Lab",
-        ) """
+        )
+        appbuilder.add_link(
+            "Query Search",
+            label=_("Query Search"),
+            href="/superset/sqllab#search",
+            icon="fa-search",
+            category_icon="fa-flask",
+            category="SQL Lab",
+            category_label=__("SQL Lab"),
+        )
+        appbuilder.add_link(
+            "Upload a CSV",
+            label=__("Upload a CSV"),
+            href="/csvtodatabaseview/form",
+            icon="fa-upload",
+            category="Sources",
+            category_label=__("Sources"),
+            category_icon="fa-wrench",
+        )
 
         #
         # Conditionally setup log views
         #
-        """ if self.config["FAB_ADD_SECURITY_VIEWS"] and self.config["SUPERSET_LOG_VIEW"]:
+        if self.config["FAB_ADD_SECURITY_VIEWS"] and self.config["SUPERSET_LOG_VIEW"]:
             appbuilder.add_api(LogRestApi)
             appbuilder.add_view(
                 LogModelView,
@@ -317,12 +395,12 @@ class SupersetAppInitializer:
                 category_label=__("Security"),
                 icon="fa-list-ol",
             )
- """
+
         #
         # Conditionally setup email views
         #
         if self.config["ENABLE_SCHEDULED_EMAIL_REPORTS"]:
-            """ appbuilder.add_separator("Manage")
+            appbuilder.add_separator("Manage")
             appbuilder.add_view(
                 DashboardEmailScheduleView,
                 "Dashboard Email Schedules",
@@ -338,12 +416,12 @@ class SupersetAppInitializer:
                 category="Manage",
                 category_label=__("Manage"),
                 icon="fa-search",
-            ) """
+            )
 
         #
         # Conditionally add Access Request Model View
         #
-        """ if self.config["ENABLE_ACCESS_REQUEST"]:
+        if self.config["ENABLE_ACCESS_REQUEST"]:
             appbuilder.add_view(
                 AccessRequestsModelView,
                 "Access requests",
@@ -351,7 +429,7 @@ class SupersetAppInitializer:
                 category="Security",
                 category_label=__("Security"),
                 icon="fa-table",
-            ) """
+            )
 
         #
         # Conditionally setup Druid Views

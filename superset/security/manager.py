@@ -765,7 +765,7 @@ class SupersetSecurityManager(SecurityManager):
 
         return (
             pvm.view_menu.name
-            in {"SQL Lab", "SQL Editor"}
+            in {"SQL Lab", "SQL Editor", "Query Search", "Saved Queries"}
             or pvm.permission.name
             in {
                 "can_sql_json",
