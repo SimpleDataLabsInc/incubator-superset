@@ -492,9 +492,9 @@ class SupersetAppInitializer:
         flask_app_mutator = self.config["FLASK_APP_MUTATOR"]
         if flask_app_mutator:
             flask_app_mutator(self.flask_app)
-        if(false){
+        logger.info("App Initialize: {}", self.config.APP_VIEWS_INITIALIZE)
+        if self.config.APP_VIEWS_INITIALIZE:
             self.init_views()
-        }
 
 
     def init_app(self) -> None:
