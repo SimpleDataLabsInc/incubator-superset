@@ -177,6 +177,7 @@ APP_NAME = "Prophecy.io"
 
 # Uncomment to setup an App icon
 APP_ICON = "/static/assets/images/logo.png"
+ISHEADER = False
 APP_ICON_WIDTH = 126
 
 # Uncomment to specify where clicking the logo would take the user

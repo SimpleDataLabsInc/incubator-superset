@@ -52,7 +52,7 @@ const store = createStore(
 const App = () => (
     <Provider store={store}>
         <Router>
-            <Menu data={menu}/>
+           {/* <Menu data={menu}/>*/}
             <Switch>
                 <Route path="/superset/welcome/">
                     <Welcome user={user}/>

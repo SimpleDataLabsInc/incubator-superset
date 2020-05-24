@@ -79,7 +79,7 @@ def create_app():
 class SupersetIndexView(IndexView):
     @expose("/")
     def index(self):
-        return redirect("/superset/welcome")
+        return redirect("/superset/sqllab")
 
     def has_no_empty_params(self, rule):
         defaults = rule.defaults if rule.defaults is not None else ()
@@ -492,8 +492,10 @@ class SupersetAppInitializer:
         flask_app_mutator = self.config["FLASK_APP_MUTATOR"]
         if flask_app_mutator:
             flask_app_mutator(self.flask_app)
+        if(false){
+            self.init_views()
+        }
 
-        self.init_views()
 
     def init_app(self) -> None:
         """
