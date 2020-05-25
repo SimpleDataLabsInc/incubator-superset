@@ -179,10 +179,10 @@ class ExploreViewContainer extends React.Component {
 
   getHeight() {
     if (this.props.forcedHeight) {
-      return this.props.forcedHeight + 'px';
+      return this.props.forcedHeight + 90 + 'px';
     }
     const navHeight = this.props.standalone ? 0 : 90;
-    return `${window.innerHeight - navHeight}px`;
+    return `${window.innerHeight - navHeight + 90}px`;
   }
 
   handleKeydown(event) {
@@ -330,7 +330,7 @@ class ExploreViewContainer extends React.Component {
       <div
         id="explore-container"
         className="container-fluid"
-        style={{ height: this.state.height, overflow: 'hidden' }}
+       style={{ height: this.state.height, overflow: 'hidden' }}
       >
         {this.state.showModal && (
           <SaveModal
@@ -348,6 +348,7 @@ class ExploreViewContainer extends React.Component {
                 alignItems: 'center',
               }}
             >
+              <br/>
               <QueryAndSaveBtns
                 canAdd="True"
                 onQuery={this.onQuery}
@@ -359,6 +360,7 @@ class ExploreViewContainer extends React.Component {
                 datasourceType={this.props.datasource_type}
               />
               <div className="m-l-5 text-muted">
+                <br/>
                 <Hotkeys
                   header="Keyboard shortcuts"
                   hotkeys={getHotKeys()}
