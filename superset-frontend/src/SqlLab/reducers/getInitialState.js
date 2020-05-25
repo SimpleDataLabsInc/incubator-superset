@@ -140,6 +140,7 @@ export default function getInitialState({
    * hasn't used SQL Lab after it has been turned on, the state will be stored
    * in the browser's local storage.
    */
+  localStorage.setItem('redux', JSON.stringify({ sqllab: {} }));
   if (
     localStorage.getItem('redux') &&
     JSON.parse(localStorage.getItem('redux')).sqlLab

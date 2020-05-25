@@ -52,17 +52,17 @@ const store = createStore(
 const App = () => (
     <Provider store={store}>
         <Router>
-            <Menu data={menu}/>
+           {/* <Menu data={menu}/>*/}
             <Switch>
                 <Route path="/superset/welcome/">
                     <Welcome user={user}/>
                 </Route>
-                {/*<Route path="/dashboard/list/">
+                <Route path="/dashboard/list/">
                     <DashboardList user={user}/>
                 </Route>
                 <Route path="/chart/list/">
                     <ChartList user={user}/>
-                </Route>*/}
+                </Route>
                 <Route path="/tablemodelview/list/">
                     <DatasetList user={user}/>
                 </Route>

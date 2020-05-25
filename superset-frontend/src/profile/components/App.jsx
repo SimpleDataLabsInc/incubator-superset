@@ -28,36 +28,36 @@ import RecentActivity from './RecentActivity';
 //import CreatedContent from './CreatedContent';
 
 const propTypes = {
-  user: PropTypes.object.isRequired,
+    user: PropTypes.object.isRequired,
 };
 
 export default function App(props) {
-  return (
-    <div className="container app">
-      <Row>
-        <Col md={3}>
-          <UserInfo user={props.user} />
-        </Col>
-        <Col md={9}>
-          <Tabs id="options">
-            <Tab
-              eventKey={0}
-              title={
-                <div>
-                  <i className="fa fa-list" /> {t('Recent Activity')}
-                </div>
-              }
-            >
-              <Panel>
-                <Panel.Body>
-                  <RecentActivity user={props.user} />
-                </Panel.Body>
-              </Panel>
-            </Tab>
-          </Tabs>
-        </Col>
-      </Row>
-    </div>
-  );
+    return (
+        <div className="container app">
+            <Row>
+                <Col md={3}>
+                    <UserInfo user={props.user} />
+                </Col>
+                <Col md={9}>
+                    <Tabs id="options">
+                        <Tab
+                            eventKey={0}
+                            title={
+                                <div>
+                                    <i className="fa fa-list" /> {t('Recent Activity')}
+                                </div>
+                            }
+                        >
+                            <Panel>
+                                <Panel.Body>
+                                    <RecentActivity user={props.user} />
+                                </Panel.Body>
+                            </Panel>
+                        </Tab>
+                    </Tabs>
+                </Col>
+            </Row>
+        </div>
+    );
 }
 App.propTypes = propTypes;

@@ -43,75 +43,75 @@ function useSyncQueryState(queryParam, queryParamType, defaultState) {
 
 export default function Welcome({ user }) {
   const [activeTab, setActiveTab] = useSyncQueryState(
-    'activeTab',
-    StringParam,
-    'all',
+      'activeTab',
+      StringParam,
+      'all',
   );
 
   const [searchQuery, setSearchQuery] = useSyncQueryState(
-    'search',
-    StringParam,
-    '',
+      'search',
+      StringParam,
+      '',
   );
 
   return (
-    <div className="container welcome">
-      <Tabs
-        activeKey={activeTab}
-        onSelect={setActiveTab}
-        id="uncontrolled-tab-example"
-      >
-      {/*  <Tab eventKey="all" title={t('Dashboards')}>
-          <Panel>
-            <Panel.Body>
-              <Row>
-                <Col md={8}>
-                  <h2>{t('Dashboards')}</h2>
-                </Col>
-                <Col md={4}>
-                  <FormControl
-                    type="text"
-                    bsSize="sm"
-                    style={{ marginTop: '25px' }}
-                    placeholder="Search"
-                    value={searchQuery}
-                    onChange={e => setSearchQuery(e.currentTarget.value)}
-                  />
-                </Col>
-              </Row>
-              <hr />
-              <DashboardTable search={searchQuery} />
-            </Panel.Body>
-          </Panel>
-        </Tab>*/}
-        <Tab eventKey="recent" title={t('Recently Viewed')}>
-          <Panel>
-            <Panel.Body>
-              <Row>
-                <Col md={8}>
-                  <h2>{t('Recently Viewed')}</h2>
-                </Col>
-              </Row>
-              <hr />
-              <RecentActivity user={user} />
-            </Panel.Body>
-          </Panel>
-        </Tab>
-        {/*<Tab eventKey="favorites" title={t('Favorites')}>
-          <Panel>
-            <Panel.Body>
-              <Row>
-                <Col md={8}>
-                  <h2>{t('Favorites')}</h2>
-                </Col>
-              </Row>
-              <hr />
-              <Favorites user={user} />
-            </Panel.Body>
-          </Panel>
-        </Tab>*/}
-      </Tabs>
-    </div>
+      <div className="container welcome">
+        <Tabs
+            activeKey={activeTab}
+            onSelect={setActiveTab}
+            id="uncontrolled-tab-example"
+        >
+          <Tab eventKey="all" title={t('Dashboards')}>
+            <Panel>
+              <Panel.Body>
+                <Row>
+                  <Col md={8}>
+                    <h2>{t('Dashboards')}</h2>
+                  </Col>
+                  <Col md={4}>
+                    <FormControl
+                        type="text"
+                        bsSize="sm"
+                        style={{ marginTop: '25px' }}
+                        placeholder="Search"
+                        value={searchQuery}
+                        onChange={e => setSearchQuery(e.currentTarget.value)}
+                    />
+                  </Col>
+                </Row>
+                <hr />
+                <DashboardTable search={searchQuery} />
+              </Panel.Body>
+            </Panel>
+          </Tab>
+          <Tab eventKey="recent" title={t('Recently Viewed')}>
+            <Panel>
+              <Panel.Body>
+                <Row>
+                  <Col md={8}>
+                    <h2>{t('Recently Viewed')}</h2>
+                  </Col>
+                </Row>
+                <hr />
+                <RecentActivity user={user} />
+              </Panel.Body>
+            </Panel>
+          </Tab>
+          <Tab eventKey="favorites" title={t('Favorites')}>
+            <Panel>
+              <Panel.Body>
+                <Row>
+                  <Col md={8}>
+                    <h2>{t('Favorites')}</h2>
+                  </Col>
+                </Row>
+                <hr />
+                <Favorites user={user} />
+              </Panel.Body>
+            </Panel>
+          </Tab>
+        </Tabs>
+      </div>
   );
 }
 

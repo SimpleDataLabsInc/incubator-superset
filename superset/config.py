@@ -177,6 +177,7 @@ APP_NAME = "Prophecy.io"
 
 # Uncomment to setup an App icon
 APP_ICON = "/static/assets/images/logo.png"
+ISHEADER = False
 APP_ICON_WIDTH = 126
 
 # Uncomment to specify where clicking the logo would take the user
@@ -775,6 +776,8 @@ TALISMAN_CONFIG = {
 # a custom security config could potentially give access to setting filters on
 # tables that users do not have access to.
 ENABLE_ROW_LEVEL_SECURITY = False
+
+APP_VIEWS_INITIALIZE = True
 
 #
 # Flask session cookie options
