@@ -30,6 +30,7 @@ from pathlib2 import Path
 
 from superset import app, appbuilder, security_manager
 from superset.app import create_app
+from superset.connectors.sqla.models import SqlaTable
 from superset.extensions import celery_app, db
 from superset.utils import core as utils
 
@@ -391,15 +392,15 @@ def update_datasources_cache():
         if database.allow_multi_schema_metadata_fetch:
             print("Fetching {} datasources ...".format(database.name))
             try:
-                database.get_all_table_names_in_database(
+                tables = database.get_all_table_names_in_database(
                     force=True, cache=True, cache_timeout=24 * 60 * 60
                 )
+                logger.info("found tables: %s" % tables)
                 database.get_all_view_names_in_database(
                     force=True, cache=True, cache_timeout=24 * 60 * 60
                 )
             except Exception as e:  # pylint: disable=broad-except
                 print("{}".format(str(e)))
-
 
 @superset.command()
 @with_appcontext
