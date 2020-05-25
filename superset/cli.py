@@ -404,11 +404,11 @@ def update_datasources_cache():
 @superset.command()
 @with_appcontext
 def update_tables_metadata():
-    """Refresh sqllab datasources cache"""
+    """Refresh Table Metadata cache"""
     from superset.connectors.sqla.models import SqlaTable
 
     for table in db.session.query(SqlaTable).all():
-        logger.info("Table: %s" % table)
+        logger.info("Table: %s: %s" % (table, type(table)))
 
 @superset.command()
 @with_appcontext
