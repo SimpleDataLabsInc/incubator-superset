@@ -408,7 +408,7 @@ def update_tables_metadata():
     from superset.connectors.sqla.models import SqlaTable
 
     for table in db.session.query(SqlaTable).all():
-        logger.info("Table: %s: %s" % (table, type(table)))
+        logger.info("Table: %s: %s: %s" % (table, type(table), dir(table)))
 
 @superset.command()
 @with_appcontext
