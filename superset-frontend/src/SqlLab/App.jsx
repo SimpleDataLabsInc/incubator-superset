@@ -48,7 +48,7 @@ const appContainer = document.getElementById('app');
 const bootstrapData = JSON.parse(appContainer.getAttribute('data-bootstrap'));
 
 initFeatureFlags(bootstrapData.common.feature_flags);
-
+localStorage.setItem('redux', JSON.stringify({ sqllab: {} }));
 const initialState = getInitialState(bootstrapData);
 const sqlLabPersistStateConfig = {
   paths: ['sqlLab'],
