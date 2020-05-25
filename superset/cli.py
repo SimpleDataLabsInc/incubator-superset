@@ -30,7 +30,6 @@ from pathlib2 import Path
 
 from superset import app, appbuilder, security_manager
 from superset.app import create_app
-from superset.connectors.sqla.models import SqlaTable
 from superset.extensions import celery_app, db
 from superset.utils import core as utils
 
@@ -91,79 +90,79 @@ def version(verbose):
     print(Style.RESET_ALL)
 
 
-def load_examples_run(load_test_data, only_metadata=False, force=False):
-    if only_metadata:
-        print("Loading examples metadata")
-    else:
-        examples_db = utils.get_example_database()
-        print(f"Loading examples metadata and related data into {examples_db}")
+# def load_examples_run(load_test_data, only_metadata=False, force=False):
+#     if only_metadata:
+#         print("Loading examples metadata")
+#     else:
+#         examples_db = utils.get_example_database()
+#         print(f"Loading examples metadata and related data into {examples_db}")
+#
+#     from superset import examples
+#
+#     examples.load_css_templates()
+#
+#     print("Loading energy related dataset")
+#     examples.load_energy(only_metadata, force)
+#
+#     print("Loading [World Bank's Health Nutrition and Population Stats]")
+#     examples.load_world_bank_health_n_pop(only_metadata, force)
+#
+#     print("Loading [Birth names]")
+#     examples.load_birth_names(only_metadata, force)
+#
+#     print("Loading [Unicode test data]")
+#     examples.load_unicode_test_data(only_metadata, force)
+#
+#     if not load_test_data:
+#         print("Loading [Random time series data]")
+#         examples.load_random_time_series_data(only_metadata, force)
+#
+#         print("Loading [Random long/lat data]")
+#         examples.load_long_lat_data(only_metadata, force)
+#
+#         print("Loading [Country Map data]")
+#         examples.load_country_map_data(only_metadata, force)
+#
+#         print("Loading [Multiformat time series]")
+#         examples.load_multiformat_time_series(only_metadata, force)
+#
+#         print("Loading [Paris GeoJson]")
+#         examples.load_paris_iris_geojson(only_metadata, force)
+#
+#         print("Loading [San Francisco population polygons]")
+#         examples.load_sf_population_polygons(only_metadata, force)
+#
+#         print("Loading [Flights data]")
+#         examples.load_flights(only_metadata, force)
+#
+#         print("Loading [BART lines]")
+#         examples.load_bart_lines(only_metadata, force)
+#
+#         print("Loading [Multi Line]")
+#         examples.load_multi_line(only_metadata)
+#
+#         print("Loading [Misc Charts] dashboard")
+#         examples.load_misc_dashboard()
+#
+#         print("Loading DECK.gl demo")
+#         examples.load_deck_dash()
+#
+#     print("Loading [Tabbed dashboard]")
+#     examples.load_tabbed_dashboard(only_metadata)
 
-    from superset import examples
 
-    examples.load_css_templates()
-
-    print("Loading energy related dataset")
-    examples.load_energy(only_metadata, force)
-
-    print("Loading [World Bank's Health Nutrition and Population Stats]")
-    examples.load_world_bank_health_n_pop(only_metadata, force)
-
-    print("Loading [Birth names]")
-    examples.load_birth_names(only_metadata, force)
-
-    print("Loading [Unicode test data]")
-    examples.load_unicode_test_data(only_metadata, force)
-
-    if not load_test_data:
-        print("Loading [Random time series data]")
-        examples.load_random_time_series_data(only_metadata, force)
-
-        print("Loading [Random long/lat data]")
-        examples.load_long_lat_data(only_metadata, force)
-
-        print("Loading [Country Map data]")
-        examples.load_country_map_data(only_metadata, force)
-
-        print("Loading [Multiformat time series]")
-        examples.load_multiformat_time_series(only_metadata, force)
-
-        print("Loading [Paris GeoJson]")
-        examples.load_paris_iris_geojson(only_metadata, force)
-
-        print("Loading [San Francisco population polygons]")
-        examples.load_sf_population_polygons(only_metadata, force)
-
-        print("Loading [Flights data]")
-        examples.load_flights(only_metadata, force)
-
-        print("Loading [BART lines]")
-        examples.load_bart_lines(only_metadata, force)
-
-        print("Loading [Multi Line]")
-        examples.load_multi_line(only_metadata)
-
-        print("Loading [Misc Charts] dashboard")
-        examples.load_misc_dashboard()
-
-        print("Loading DECK.gl demo")
-        examples.load_deck_dash()
-
-    print("Loading [Tabbed dashboard]")
-    examples.load_tabbed_dashboard(only_metadata)
-
-
-@with_appcontext
-@superset.command()
-@click.option("--load-test-data", "-t", is_flag=True, help="Load additional test data")
-@click.option(
-    "--only-metadata", "-m", is_flag=True, help="Only load metadata, skip actual data"
-)
-@click.option(
-    "--force", "-f", is_flag=True, help="Force load data even if table already exists"
-)
-def load_examples(load_test_data, only_metadata=False, force=False):
-    """Loads a set of Slices and Dashboards and a supporting dataset """
-    load_examples_run(load_test_data, only_metadata, force)
+# @with_appcontext
+# @superset.command()
+# @click.option("--load-test-data", "-t", is_flag=True, help="Load additional test data")
+# @click.option(
+#     "--only-metadata", "-m", is_flag=True, help="Only load metadata, skip actual data"
+# )
+# @click.option(
+#     "--force", "-f", is_flag=True, help="Force load data even if table already exists"
+# )
+# def load_examples(load_test_data, only_metadata=False, force=False):
+#     """Loads a set of Slices and Dashboards and a supporting dataset """
+#     load_examples_run(load_test_data, only_metadata, force)
 
 
 @with_appcontext
