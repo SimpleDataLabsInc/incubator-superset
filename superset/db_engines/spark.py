@@ -11,7 +11,7 @@ try:
 
     class SparkSqlDialect(HiveDialect):
         name = "tspark"
-        type_compiler = HiveTypeCompiler
+        type_compiler = SparkSqlTypeCompiler
 
         def get_table_names(self, connection, schema=None, **kw):
             query = 'SHOW TABLES'
