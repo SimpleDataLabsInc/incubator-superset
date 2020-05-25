@@ -50,5 +50,5 @@ for (_, name, _) in pkgutil.iter_modules([Path(__file__).parent]):  # type: igno
             and issubclass(attribute, BaseEngineSpec)
             and attribute.engine != ""
         ):
-            logger.info("Found: %s, %s" % (attribute.engine, attribute))
+            logger.debug("Found: %s, %s" % (attribute.engine, attribute))
             engines[attribute.engine] = attribute
