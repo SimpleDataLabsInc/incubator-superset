@@ -2,11 +2,16 @@ import logging
 
 logger = logging.getLogger(__name__)
 try:
-    from pyhive.sqlalchemy_hive import HiveDialect
+    from pyhive.sqlalchemy_hive import HiveDialect, HiveTypeCompiler
+
+    class SparkSqlTypeCompiler(HiveTypeCompiler):
+        def visit_TINYINT(self, type_):
+            return 'INT'
 
 
     class SparkSqlDialect(HiveDialect):
         name = "tspark"
+        type_compiler = HiveTypeCompiler
 
         def get_table_names(self, connection, schema=None, **kw):
             query = 'SHOW TABLES'
