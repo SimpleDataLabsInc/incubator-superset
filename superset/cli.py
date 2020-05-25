@@ -403,6 +403,15 @@ def update_datasources_cache():
 
 @superset.command()
 @with_appcontext
+def update_tables_metadata():
+    """Refresh sqllab datasources cache"""
+    from superset.connectors.sqla.models import SqlaTable
+
+    for table in db.session.query(SqlaTable).all():
+        logger.info("Table: %s" % table)
+
+@superset.command()
+@with_appcontext
 @click.option(
     "--workers", "-w", type=int, help="Number of celery server workers to fire up"
 )
