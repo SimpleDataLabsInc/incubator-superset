@@ -777,6 +777,8 @@ TALISMAN_CONFIG = {
 # tables that users do not have access to.
 ENABLE_ROW_LEVEL_SECURITY = False
 
+APP_VIEWS_INITIALIZE = True
+
 #
 # Flask session cookie options
 #
