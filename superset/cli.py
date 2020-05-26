@@ -420,6 +420,7 @@ def update_tables_metadata():
             db.session.delete(invalid)
         except Exception as e:
             logger.error("Unable to delete: %s" % e)
+    db.session.commit()
 
 
 @superset.command()
