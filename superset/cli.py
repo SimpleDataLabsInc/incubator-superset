@@ -407,17 +407,19 @@ def update_tables_metadata():
     """Refresh Table Metadata cache"""
     from superset.connectors.sqla.models import SqlaTable
 
-    logger.info("db session: %s: %s" % (dir(db), dir(db.session)))
     invalid_tables = []
     for table in db.session.query(SqlaTable).all():
         logger.info("Table: %s, Fetching Metadata" % (table))
-        logger.info("Invalid Table: %s: %s" % (table, dir(table)))
         try:
             v = table.fetch_metadata()
         except Exception as e:
             invalid_tables.append(table)
     for invalid in invalid_tables:
-        logger.info("Invalid Table: %s: %s" % (invalid, dir(invalid)))
+        logger.info("Invalid Table: %s" % (invalid))
+        try:
+            db.session.delete(invalid)
+        except Exception as e:
+            logger.error("Unable to delete: %s" % e)
 
 
 @superset.command()
