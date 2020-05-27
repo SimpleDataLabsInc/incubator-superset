@@ -403,9 +403,13 @@ def update_datasources_cache():
 
 @superset.command()
 @with_appcontext
-def update_tables_metadata():
+@click.option(
+    "--clean-data", "-c", default=False, help="Clean Invalid Data"
+)
+def update_metadata(clean_data = False):
     """Refresh Table Metadata cache"""
     from superset.connectors.sqla.models import SqlaTable
+    from superset.models.core import Database
 
     invalid_tables = []
     for table in db.session.query(SqlaTable).all():
@@ -413,14 +417,30 @@ def update_tables_metadata():
         try:
             v = table.fetch_metadata()
         except Exception as e:
-            invalid_tables.append(table)
-    for invalid in invalid_tables:
-        logger.info("Invalid Table: %s" % (invalid))
+            if clean_data:
+                invalid_tables.append(table)
+    invalid_db = []
+    for database in db.session.query(Database).all():
+        logger.info("Database: %s, Checking" % database)
         try:
-            db.session.delete(invalid)
+            v = database.get_all_table_names_in_database()
         except Exception as e:
-            logger.error("Unable to delete: %s" % e)
-    db.session.commit()
+            if clean_data:
+                invalid_db.append(database)
+    if clean_data:
+        for invalid in invalid_tables:
+            logger.info("Invalid Table: %s" % (invalid))
+            try:
+                db.session.delete(invalid)
+            except Exception as e:
+                logger.error("Unable to delete: %s" % e)
+        for invalid in invalid_db:
+            logger.info("Invalid Database: %s" % invalid)
+            try:
+                db.session.delete(invalid)
+            except Exception as e:
+                logger.error("Unable to delete: %s" % e)
+        db.session.commit()
 
 
 @superset.command()
