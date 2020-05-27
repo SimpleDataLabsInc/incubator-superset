@@ -209,7 +209,7 @@ class SqlEditor extends React.PureComponent {
         func: () => {
           this.props.actions.addQueryEditor({
             ...this.props.queryEditor,
-            title: t('Untitled Query'),
+            title: t('Visualize Query'),
             sql: '',
           });
         },

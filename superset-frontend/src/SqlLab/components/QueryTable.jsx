@@ -63,7 +63,7 @@ class QueryTable extends React.PureComponent {
   openQuery(dbId, schema, sql) {
     const newQuery = {
       dbId,
-      title: t('Untitled Query'),
+      title: t('Visualize Query'),
       schema,
       sql,
     };

@@ -178,7 +178,7 @@ export const defaultQueryEditor = {
   latestQueryId: null,
   selectedText: null,
   sql: 'SELECT *\nFROM\nWHERE',
-  title: 'Untitled Query',
+  title: 'Visualize Query',
   schemaOptions: [
     {
       value: 'main',
@@ -376,7 +376,7 @@ export const stoppedQuery = {
   sqlEditorId: 'rJaf5u9WZ',
   startDttm: 1497400851936,
   state: 'stopped',
-  tab: 'Untitled Query 2',
+  tab: 'Visualize Query 2',
   tempTableName: '',
 };
 export const runningQuery = {

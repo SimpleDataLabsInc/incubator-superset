@@ -223,7 +223,7 @@ class TabbedSqlEditors extends React.PureComponent {
             '-- Note: Unless you save your query, these tabs will NOT persist if you clear your cookies or change browsers.',
         )}\n\n`;
     const qe = {
-      title: t('Untitled Query %s', queryCount),
+      title: t('Visualize Query %s', queryCount),
       dbId:
           activeQueryEditor && activeQueryEditor.dbId
               ? activeQueryEditor.dbId

@@ -49,7 +49,7 @@ describe('TabbedSqlEditors', () => {
       schema: null,
       selectedText: null,
       sql: 'SELECT ds...',
-      title: 'Untitled Query',
+      title: 'Visualize Query',
     },
   ];
   const queries = {
@@ -179,7 +179,7 @@ describe('TabbedSqlEditors', () => {
     wrapper.instance().newQueryEditor();
     expect(
       wrapper.instance().props.actions.addQueryEditor.getCall(0).args[0].title,
-    ).toContain('Untitled Query');
+    ).toContain('Visualize Query');
   });
   it('should duplicate query editor', () => {
     wrapper = getWrapper();

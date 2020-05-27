@@ -39,7 +39,7 @@ describe('async actions', () => {
     latestQueryId: null,
     selectedText: null,
     sql: 'SELECT *\nFROM\nWHERE',
-    title: 'Untitled Query',
+    title: 'Visualize Query',
     schemaOptions: [{ value: 'main', label: 'main', title: 'main' }],
   };
 

@@ -123,7 +123,7 @@ export class ExploreChartHeader extends React.PureComponent {
     if (this.props.slice) {
       title = this.props.slice.slice_name;
     } else {
-      title = t('%s - untitled', this.props.table_name);
+      title = t('%s Visualization', this.props.table_name);
     }
     return title;
   }

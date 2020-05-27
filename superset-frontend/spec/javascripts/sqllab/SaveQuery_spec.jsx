@@ -31,7 +31,7 @@ describe('SavedQuery', () => {
       schema: 'main',
       sql: 'SELECT * FROM t',
     },
-    defaultLabel: 'untitled',
+    defaultLabel: 'Visualize',
     animation: false,
   };
   it('is valid', () => {
