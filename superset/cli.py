@@ -404,7 +404,7 @@ def update_datasources_cache():
 @superset.command()
 @with_appcontext
 @click.option(
-    "--clean-data", "-c", default=False, help="Clean Invalid Data"
+    "--clean-data", "-c", is_flag=True, help="Clean Invalid Data"
 )
 def update_metadata(clean_data = False):
     """Refresh Table Metadata cache"""
