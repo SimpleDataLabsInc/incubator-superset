@@ -417,6 +417,7 @@ def update_metadata(clean_data = False):
         try:
             v = table.fetch_metadata()
         except Exception as e:
+            logger.info("Table: %s, Unable to Connect: %s" % e)
             if clean_data:
                 invalid_tables.append(table)
     invalid_db = []
@@ -425,6 +426,7 @@ def update_metadata(clean_data = False):
         try:
             v = database.get_all_table_names_in_database()
         except Exception as e:
+            logger.info("Database: %s, Unable to Connect: %s" % e)
             if clean_data:
                 invalid_db.append(database)
     if clean_data:
