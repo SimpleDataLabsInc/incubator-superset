@@ -149,6 +149,7 @@ class Database(
         "allow_run_async",
         "allow_ctas",
         "allow_csv_upload",
+        "allow_multi_schema_metadata_fetch",
         "extra",
     ]
     export_children = ["tables"]
