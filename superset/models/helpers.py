@@ -98,6 +98,8 @@ class ImportMixin:
                 else str(column.type)
             )
 
+        logger.info("Excludes: %s" % parent_excludes)
+        logger.info("Includes: %s" % cls.export_fields)
         schema = {
             column.name: formatter(column)
             for column in cls.__table__.columns
