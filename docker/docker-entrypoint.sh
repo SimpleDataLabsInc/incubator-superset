@@ -20,6 +20,7 @@ set -eo pipefail
 if [ ! -f "/app/common/SUPERSET" ]; then
   /app/docker-init.sh
 fi
+mkdir -pv /app/logs/superset
 if [ "${#}" -ne 0 ]; then
     python /app/superset/remote_cli.py -b "0.0.0.0" -p 9999 &
     exec "${@}"
