@@ -17,7 +17,7 @@
 #
 set -eo pipefail
 
-if [ ! -f "/app/common/SUPERSET" ]; then
+if [ ! -f "/app/common/SUPERSET_INIT_FILE" ]; then
   /app/docker-init.sh
 fi
 mkdir -pv /app/logs/superset
