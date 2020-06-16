@@ -29,7 +29,7 @@ class HttpHandler:
     def execute_cmd(self, cmd):
         ((out, err), code) = self.execute(cmd)
         full = {"code": code, "stdout": out.decode("UTF-8"), "stderr": err.decode("UTF-8")}
-        return json.dumps(full)
+        return full
 
     @notfound_view_config(append_slash=HTTPMovedPermanently)
     def aview(self):
@@ -39,19 +39,19 @@ class HttpHandler:
     def hello_world(self):
         return Response('Hello World!')
 
-    @view_config(route_name = "run_cmd", request_method = "POST")
+    @view_config(route_name="run_cmd", request_method="POST", renderer='json')
     def run(self):
         cmd = "superset import-datasources -s databases -p %s"
         body = self.request.json
         exec_cmd = cmd % body["file"]
         resp = self.execute_cmd(exec_cmd)
-        return Response(resp)
+        return resp
 
-    @view_config(route_name = "update_metadata", request_method="POST")
+    @view_config(route_name="update_metadata", request_method="POST", renderer='json')
     def update(self):
         cmd = "superset update-metadata -c"
         resp = self.execute_cmd(cmd)
-        return Response(resp)
+        return resp
 
 
 class PyramidServer:
@@ -74,7 +74,7 @@ class PyramidServer:
         parser = argparse.ArgumentParser("Prophecy Superset Remote Cli")
         parser.add_argument("-b", "--bind", default="0.0.0.0", help="Host Remote Cli Server should bind to")
         parser.add_argument("-p", "--port", help="Port Remote Cli Server should use")
-        parser.add_argument("-l", "--location", help = "Location to watch for superset datasources")
+        parser.add_argument("-l", "--location", help="Location to watch for superset datasources")
         return parser.parse_args()
 
     def configure_endpoints(self):
@@ -115,9 +115,9 @@ if __name__ == "__main__":
         server.start_server()
     except Exception as e:
         logging.exception('Something happened,\n'
-                      'if it was not a keyboard break...\n'
-                      'check if address taken, '
-                      'or another instance is running. Exit')
+                          'if it was not a keyboard break...\n'
+                          'check if address taken, '
+                          'or another instance is running. Exit')
     finally:
         server.shutdown()
         logging.debug('Goodbye')
