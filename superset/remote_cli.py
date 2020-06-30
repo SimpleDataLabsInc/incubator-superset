@@ -1,5 +1,4 @@
 import argparse
-import json
 import logging
 import os
 import subprocess
@@ -53,6 +52,14 @@ class HttpHandler:
         resp = self.execute_cmd(cmd)
         return resp
 
+    @view_config(route_name="undo_init", request_method="DELETE", renderer='json')
+    def remove(self):
+        cmd = "/bin/rm -v /app/common/SUPERSET_INIT_FILE"
+        resp = self.execute_cmd(cmd)
+        return resp
+
+
+
 
 class PyramidServer:
     def __init__(self):
@@ -81,9 +88,7 @@ class PyramidServer:
         self.config.add_route('hello', '/')
         self.config.add_route("run_cmd", "/run")
         self.config.add_route("update_metadata", "/update")
-        # self.config.add_view(self.hello_world, route_name='hello')
-        # self.config.add_view(self.run, route_name='run_cmd')
-        # self.config.add_view(self.update, route_name='update_metadata')
+        self.config.add_route("undo_init", "/reset")
         self.config.scan()
 
     def create_app(self):
@@ -94,7 +99,7 @@ class PyramidServer:
 
     def start_server(self):
         self.server = make_server(self.host, self.port, self.app)
-        self.logger.debug("SERVER: %s" % dir(self.server))
+        self.logger.debug("SERVER: %s" % self.server)
         self.server.serve_forever()
 
     def shutdown(self):
@@ -103,15 +108,15 @@ class PyramidServer:
 
 if __name__ == "__main__":
 
-    logging.basicConfig(level=logging.INFO,
+    logging.basicConfig(level=logging.DEBUG,
                         format='[%(levelname)s] %(filename)s:%(lineno)d: %(name)s: %(message)s',
                         )
     server = PyramidServer()
     try:
         logging.debug('Server start')
-        logging.debug("SERVER: %s" % dir(server))
+        logging.debug("SERVER: %s" % server)
         server.create_app()
-        logging.debug("APP: %s" % dir(server.app))
+        logging.debug("APP: %s" % server.app)
         server.start_server()
     except Exception as e:
         logging.exception('Something happened,\n'
