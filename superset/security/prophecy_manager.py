@@ -15,3 +15,6 @@ class ProphecySecurityManager(SupersetSecurityManager):
 
     def find_user(self, username=None, email=None):
         return self.client.query(username)
+
+
+CUSTOM_SECURITY_MANAGER = ProphecySecurityManager

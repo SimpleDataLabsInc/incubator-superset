@@ -57,7 +57,7 @@ class MetagraphClient(ModelView):
             if expires > now:
                 if self.manager:
                     self.manager.log.info("Valid User Found")
-                return User(id = user["_id"], username = token, email = user["email"], first_name = user["firstName"], last_name = user["lastName"], active = True)
+                return self.user_model(id = user["_id"], username = token, email = user["email"], first_name = user["firstName"], last_name = user["lastName"], active = True)
             else:
                 if self.manager:
                     self.manager.log.info("User Token Expired")
