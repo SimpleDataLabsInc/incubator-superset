@@ -16,17 +16,22 @@
 # under the License.
 # pylint: disable=C,R,W
 """A set of constants and methods to manage permissions and security"""
+import datetime
+import json
 import logging
+import time
 from typing import Any, Callable, List, Optional, Set, Tuple, TYPE_CHECKING, Union
 
-from flask import current_app, g
+from flask import redirect, g, flash, request, current_app
 from flask_appbuilder import Model
+from flask_appbuilder._compat import as_unicode
 from flask_appbuilder.security.sqla import models as ab_models
 from flask_appbuilder.security.sqla.manager import SecurityManager
 from flask_appbuilder.security.sqla.models import (
     assoc_permissionview_role,
     assoc_user_role,
 )
+from flask_appbuilder.security.views import AuthRemoteUserView
 from flask_appbuilder.security.views import (
     PermissionModelView,
     PermissionViewModelView,
@@ -34,7 +39,11 @@ from flask_appbuilder.security.views import (
     UserModelView,
     ViewMenuModelView,
 )
+from flask_appbuilder.security.views import expose
 from flask_appbuilder.widgets import ListWidget
+from flask_login import login_user
+from gql import Client, gql
+from gql.transport.requests import RequestsHTTPTransport
 from sqlalchemy import or_
 from sqlalchemy.engine.base import Connection
 from sqlalchemy.orm.mapper import Mapper
@@ -106,27 +115,27 @@ class SupersetSecurityManager(SecurityManager):
     }
 
     GAMMA_READ_ONLY_MODEL_VIEWS = {
-        "SqlMetricInlineView",
-        "TableColumnInlineView",
-        "TableModelView",
-        "DruidColumnInlineView",
-        "DruidDatasourceModelView",
-        "DruidMetricInlineView",
-        "Datasource",
-    } | READ_ONLY_MODEL_VIEWS
+                                      "SqlMetricInlineView",
+                                      "TableColumnInlineView",
+                                      "TableModelView",
+                                      "DruidColumnInlineView",
+                                      "DruidDatasourceModelView",
+                                      "DruidMetricInlineView",
+                                      "Datasource",
+                                  } | READ_ONLY_MODEL_VIEWS
 
     ADMIN_ONLY_VIEW_MENUS = {
-        "AccessRequestsModelView",
-        "Manage",
-        "SQL Lab",
-        "Queries",
-        "Refresh Druid Metadata",
-        "ResetPasswordView",
-        "RoleModelView",
-        "LogModelView",
-        "Security",
-        "RowLevelSecurityFiltersModelView",
-    } | USER_MODEL_VIEWS
+                                "AccessRequestsModelView",
+                                "Manage",
+                                "SQL Lab",
+                                "Queries",
+                                "Refresh Druid Metadata",
+                                "ResetPasswordView",
+                                "RoleModelView",
+                                "LogModelView",
+                                "Security",
+                                "RowLevelSecurityFiltersModelView",
+                            } | USER_MODEL_VIEWS
 
     ALPHA_ONLY_VIEW_MENUS = {"Upload a CSV"}
 
@@ -158,7 +167,7 @@ class SupersetSecurityManager(SecurityManager):
     ACCESSIBLE_PERMS = {"can_userinfo"}
 
     def get_schema_perm(
-        self, database: Union["Database", str], schema: Optional[str] = None
+            self, database: Union["Database", str], schema: Optional[str] = None
     ) -> Optional[str]:
         """
         Return the database specific schema permission.
@@ -231,9 +240,9 @@ class SupersetSecurityManager(SecurityManager):
         :returns: Whether the user can access the Superset database
         """
         return (
-            self.all_datasource_access()
-            or self.all_database_access()
-            or self.can_access("database_access", database.perm)
+                self.all_datasource_access()
+                or self.all_database_access()
+                or self.can_access("database_access", database.perm)
         )
 
     def schema_access(self, datasource: "BaseDatasource") -> bool:
@@ -249,9 +258,9 @@ class SupersetSecurityManager(SecurityManager):
         """
 
         return (
-            self.all_datasource_access()
-            or self.database_access(datasource.database)
-            or self.can_access("schema_access", datasource.schema_perm)
+                self.all_datasource_access()
+                or self.database_access(datasource.database)
+                or self.can_access("schema_access", datasource.schema_perm)
         )
 
     def datasource_access(self, datasource: "BaseDatasource") -> bool:
@@ -317,12 +326,12 @@ class SupersetSecurityManager(SecurityManager):
         return conf.get("PERMISSION_INSTRUCTIONS_LINK")
 
     def can_access_datasource(
-        self, database: "Database", table_name: str, schema: Optional[str] = None
+            self, database: "Database", table_name: str, schema: Optional[str] = None
     ) -> bool:
         return self._datasource_access_by_name(database, table_name, schema=schema)
 
     def _datasource_access_by_name(
-        self, database: "Database", table_name: str, schema: Optional[str] = None
+            self, database: "Database", table_name: str, schema: Optional[str] = None
     ) -> bool:
         """
         Return True if the user can access the SQL table, False otherwise.
@@ -351,7 +360,7 @@ class SupersetSecurityManager(SecurityManager):
         return False
 
     def _get_schema_and_table(
-        self, table_in_query: str, schema: str
+            self, table_in_query: str, schema: str
     ) -> Tuple[str, str]:
         """
         Return the SQL schema/table tuple associated with the table extracted from the
@@ -372,7 +381,7 @@ class SupersetSecurityManager(SecurityManager):
         return (schema, table_name_pieces[0])
 
     def _datasource_access_by_fullname(
-        self, database: "Database", table_in_query: str, schema: str
+            self, database: "Database", table_in_query: str, schema: str
     ) -> bool:
         """
         Return True if the user can access the table extracted from the SQL query, False
@@ -426,19 +435,19 @@ class SupersetSecurityManager(SecurityManager):
 
         base_query = (
             db.session.query(self.viewmenu_model.name)
-            .join(self.permissionview_model)
-            .join(self.permission_model)
-            .join(assoc_permissionview_role)
-            .join(self.role_model)
+                .join(self.permissionview_model)
+                .join(self.permission_model)
+                .join(assoc_permissionview_role)
+                .join(self.role_model)
         )
 
         if not g.user.is_anonymous:
             # filter by user id
             view_menu_names = (
                 base_query.join(assoc_user_role)
-                .join(self.user_model)
-                .filter(self.user_model.id == g.user.id)
-                .filter(self.permission_model.name == permission_name)
+                    .join(self.user_model)
+                    .filter(self.user_model.id == g.user.id)
+                    .filter(self.permission_model.name == permission_name)
             ).all()
             return set([s.name for s in view_menu_names])
 
@@ -455,7 +464,7 @@ class SupersetSecurityManager(SecurityManager):
         return set()
 
     def schemas_accessible_by_user(
-        self, database: "Database", schemas: List[str], hierarchical: bool = True
+            self, database: "Database", schemas: List[str], hierarchical: bool = True
     ) -> List[str]:
         """
         Return the sorted list of SQL schemas accessible by the user.
@@ -470,7 +479,7 @@ class SupersetSecurityManager(SecurityManager):
         from superset.connectors.sqla.models import SqlaTable
 
         if hierarchical and (
-            self.database_access(database) or self.all_datasource_access()
+                self.database_access(database) or self.all_datasource_access()
         ):
             return schemas
 
@@ -486,21 +495,21 @@ class SupersetSecurityManager(SecurityManager):
         if perms:
             tables = (
                 db.session.query(SqlaTable.schema)
-                .filter(SqlaTable.database_id == database.id)
-                .filter(SqlaTable.schema.isnot(None))
-                .filter(SqlaTable.schema != "")
-                .filter(or_(SqlaTable.perm.in_(perms)))
-                .distinct()
+                    .filter(SqlaTable.database_id == database.id)
+                    .filter(SqlaTable.schema.isnot(None))
+                    .filter(SqlaTable.schema != "")
+                    .filter(or_(SqlaTable.perm.in_(perms)))
+                    .distinct()
             )
             accessible_schemas.update([t.schema for t in tables])
 
         return [s for s in schemas if s in accessible_schemas]
 
     def get_datasources_accessible_by_user(
-        self,
-        database: "Database",
-        datasource_names: List[DatasourceName],
-        schema: Optional[str] = None,
+            self,
+            database: "Database",
+            datasource_names: List[DatasourceName],
+            schema: Optional[str] = None,
     ) -> List[DatasourceName]:
         """
         Return the list of SQL tables accessible by the user.
@@ -676,13 +685,13 @@ class SupersetSecurityManager(SecurityManager):
         """
 
         if (
-            pvm.view_menu.name in self.READ_ONLY_MODEL_VIEWS
-            and pvm.permission.name not in self.READ_ONLY_PERMISSION
+                pvm.view_menu.name in self.READ_ONLY_MODEL_VIEWS
+                and pvm.permission.name not in self.READ_ONLY_PERMISSION
         ):
             return True
         return (
-            pvm.view_menu.name in self.ADMIN_ONLY_VIEW_MENUS
-            or pvm.permission.name in self.ADMIN_ONLY_PERMISSIONS
+                pvm.view_menu.name in self.ADMIN_ONLY_VIEW_MENUS
+                or pvm.permission.name in self.ADMIN_ONLY_PERMISSIONS
         )
 
     def _is_alpha_only(self, pvm: PermissionModelView) -> bool:
@@ -695,13 +704,13 @@ class SupersetSecurityManager(SecurityManager):
         """
 
         if (
-            pvm.view_menu.name in self.GAMMA_READ_ONLY_MODEL_VIEWS
-            and pvm.permission.name not in self.READ_ONLY_PERMISSION
+                pvm.view_menu.name in self.GAMMA_READ_ONLY_MODEL_VIEWS
+                and pvm.permission.name not in self.READ_ONLY_PERMISSION
         ):
             return True
         return (
-            pvm.view_menu.name in self.ALPHA_ONLY_VIEW_MENUS
-            or pvm.permission.name in self.ALPHA_ONLY_PERMISSIONS
+                pvm.view_menu.name in self.ALPHA_ONLY_VIEW_MENUS
+                or pvm.permission.name in self.ALPHA_ONLY_PERMISSIONS
         )
 
     def _is_accessible_to_all(self, pvm: PermissionModelView) -> bool:
@@ -736,7 +745,7 @@ class SupersetSecurityManager(SecurityManager):
         """
 
         return not (
-            self._is_user_defined_permission(pvm) or self._is_admin_only(pvm)
+                self._is_user_defined_permission(pvm) or self._is_admin_only(pvm)
         ) or self._is_accessible_to_all(pvm)
 
     def _is_gamma_pvm(self, pvm: PermissionModelView) -> bool:
@@ -749,9 +758,9 @@ class SupersetSecurityManager(SecurityManager):
         """
 
         return not (
-            self._is_user_defined_permission(pvm)
-            or self._is_admin_only(pvm)
-            or self._is_alpha_only(pvm)
+                self._is_user_defined_permission(pvm)
+                or self._is_admin_only(pvm)
+                or self._is_alpha_only(pvm)
         ) or self._is_accessible_to_all(pvm)
 
     def _is_sql_lab_pvm(self, pvm: PermissionModelView) -> bool:
@@ -764,20 +773,20 @@ class SupersetSecurityManager(SecurityManager):
         """
 
         return (
-            pvm.view_menu.name
-            in {"SQL Lab", "SQL Editor", "Query Search", "Saved Queries"}
-            or pvm.permission.name
-            in {
-                "can_sql_json",
-                "can_csv",
-                "can_search_queries",
-                "can_sqllab_viz",
-                "can_sqllab",
-            }
-            or (
-                pvm.view_menu.name in self.USER_MODEL_VIEWS
-                and pvm.permission.name == "can_list"
-            )
+                pvm.view_menu.name
+                in {"SQL Lab", "SQL Editor", "Query Search", "Saved Queries"}
+                or pvm.permission.name
+                in {
+                    "can_sql_json",
+                    "can_csv",
+                    "can_search_queries",
+                    "can_sqllab_viz",
+                    "can_sqllab",
+                }
+                or (
+                        pvm.view_menu.name in self.USER_MODEL_VIEWS
+                        and pvm.permission.name == "can_list"
+                )
         )
 
     def _is_granter_pvm(self, pvm: PermissionModelView) -> bool:
@@ -792,7 +801,7 @@ class SupersetSecurityManager(SecurityManager):
         return pvm.permission.name in {"can_override_role_permissions", "can_approve"}
 
     def set_perm(
-        self, mapper: Mapper, connection: Connection, target: "BaseDatasource"
+            self, mapper: Mapper, connection: Connection, target: "BaseDatasource"
     ) -> None:
         """
         Set the datasource permissions.
@@ -805,18 +814,18 @@ class SupersetSecurityManager(SecurityManager):
         if target.perm != target.get_perm():
             connection.execute(
                 link_table.update()
-                .where(link_table.c.id == target.id)
-                .values(perm=target.get_perm())
+                    .where(link_table.c.id == target.id)
+                    .values(perm=target.get_perm())
             )
 
         if (
-            hasattr(target, "schema_perm")
-            and target.schema_perm != target.get_schema_perm()
+                hasattr(target, "schema_perm")
+                and target.schema_perm != target.get_schema_perm()
         ):
             connection.execute(
                 link_table.update()
-                .where(link_table.c.id == target.id)
-                .values(schema_perm=target.get_schema_perm())
+                    .where(link_table.c.id == target.id)
+                    .values(schema_perm=target.get_schema_perm())
             )
 
         pvm_names = []
@@ -851,8 +860,8 @@ class SupersetSecurityManager(SecurityManager):
             if permission and view_menu:
                 pv = (
                     self.get_session.query(self.permissionview_model)
-                    .filter_by(permission=permission, view_menu=view_menu)
-                    .first()
+                        .filter_by(permission=permission, view_menu=view_menu)
+                        .first()
                 )
             if not pv and permission and view_menu:
                 permission_view_table = (
@@ -914,20 +923,20 @@ class SupersetSecurityManager(SecurityManager):
 
             user_roles = (
                 db.session.query(assoc_user_role.c.role_id)
-                .filter(assoc_user_role.c.user_id == g.user.id)
-                .subquery()
+                    .filter(assoc_user_role.c.user_id == g.user.id)
+                    .subquery()
             )
             filter_roles = (
                 db.session.query(RLSFilterRoles.c.id)
-                .filter(RLSFilterRoles.c.role_id.in_(user_roles))
-                .subquery()
+                    .filter(RLSFilterRoles.c.role_id.in_(user_roles))
+                    .subquery()
             )
             query = (
                 db.session.query(
                     RowLevelSecurityFilter.id, RowLevelSecurityFilter.clause
                 )
-                .filter(RowLevelSecurityFilter.table_id == table.id)
-                .filter(RowLevelSecurityFilter.id.in_(filter_roles))
+                    .filter(RowLevelSecurityFilter.table_id == table.id)
+                    .filter(RowLevelSecurityFilter.id.in_(filter_roles))
             )
             return query.all()
         return []
@@ -942,3 +951,110 @@ class SupersetSecurityManager(SecurityManager):
         ids = [f.id for f in self.get_rls_filters(table)]
         ids.sort()  # Combinations rather than permutations
         return ids
+
+
+
+
+
+class MetagraphClient:
+
+    def __init__(self, user_model):
+        from flask_appbuilder.security.sqla.models import User
+        self.user_model = user_model if user_model else User
+        from superset import conf
+        metagraph_transport = RequestsHTTPTransport(
+            url=conf["METAGRAPH_URL"],
+            verify=False,
+            retries=3,
+        )
+        self.client = Client(
+            transport=metagraph_transport,
+            fetch_schema_from_transport=True,
+        )
+
+    def to_formatted(self, date):
+        print(datetime.datetime.fromtimestamp(date / 1000.0).strftime('%c'))
+        return date
+
+    def query(self, token):
+        query = gql('''{
+          User(token: "%s") {
+          _id
+          firstName
+          lastName
+          email
+            aspects(aspect: [Info]) {
+              AspectName
+              AspectValue
+              schema
+            }
+          }
+        }''' % token)
+        print(dir(MetagraphClient.datamodel))
+        try:
+            value = self.client.execute(query)
+            user = value["User"]
+            info = [v for v in user["aspects"] if v["AspectName"] == "Info"]
+            token = json.loads(info[0]["AspectValue"])["token"]
+            token, expires = token["token"], token["expires"]
+            now = int(time.time() * 1000)
+            if expires > now:
+                if self.manager:
+                    self.manager.log.info("Valid User Found")
+                return self.user_model(id=user["_id"], username=token, email=user["email"],
+                                       first_name=user["firstName"], last_name=user["lastName"], active=True)
+            else:
+                if self.manager:
+                    self.manager.log.info("User Token Expired")
+                return None
+        except Exception as e:
+            print(e)
+            return None
+
+
+class ProphecyRemoteUserView(AuthRemoteUserView):
+    # Leave blank
+    login_template = ''
+
+    @expose('/login/')
+    def login(self):
+        # headers
+        token = request.headers.get("X-AUTH-TOKEN")
+        # username = request.headers.get('HTTP_PROXY_REMOTE_USER')
+        if g.user is not None and g.user.is_authenticated():
+            return redirect(self.appbuilder.get_url_for_index)
+
+        sm = self.appbuilder.sm
+        session = sm.get_session
+        user = session.query(sm.user_model).filter_by(username=token).first()
+        if user is None and token:
+            msg = ("User not allowed, {}".format(token))
+            flash(as_unicode(msg), 'error')
+            return redirect(self.appbuilder.get_url_for_login)
+
+        if token:
+            user = self.appbuilder.sm.auth_user_remote_user(token)
+            if user is None:
+                flash(as_unicode(self.invalid_login_message), 'warning')
+            else:
+                login_user(user)
+        else:
+            flash(as_unicode(self.invalid_login_message), 'warning')
+
+        return redirect(self.appbuilder.get_url_for_index)
+
+
+class ProphecySecurityManager(SupersetSecurityManager):
+    authremoteuserview = ProphecyRemoteUserView
+    from flask_appbuilder.security.sqla.models import User
+    user_model = User
+
+    def __init__(self, appbuilder):
+        super(ProphecySecurityManager, self).__init__(appbuilder)
+        self.client = MetagraphClient(self)
+
+    def find_user(self, username=None, email=None):
+        return self.client.query(username)
+
+
+CUSTOM_SECURITY_MANAGER = ProphecySecurityManager
