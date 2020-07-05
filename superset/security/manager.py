@@ -1021,7 +1021,7 @@ class ProphecyRemoteUserView(AuthRemoteUserView):
         # headers
         token = request.headers.get("X-AUTH-TOKEN")
         # username = request.headers.get('HTTP_PROXY_REMOTE_USER')
-        if g.user is not None and g.user.is_authenticated():
+        if g.user is not None and g.user.is_authenticated:
             return redirect(self.appbuilder.get_url_for_index)
 
         sm = self.appbuilder.sm
