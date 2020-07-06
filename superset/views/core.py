@@ -2541,7 +2541,7 @@ class Superset(BaseSupersetView):
         # Check if datasource exists
         if not datasource:
             return json_error_response(DATASOURCE_MISSING_ERR)
-
+        database = datasource.database
         # Check permission for datasource
         security_manager.assert_datasource_permission(datasource)
         return json_success(json.dumps(datasource.data))

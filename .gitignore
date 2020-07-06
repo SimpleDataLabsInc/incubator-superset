@@ -80,5 +80,6 @@ apache-superset-*.tar.gz*
 
 # Translation binaries
 messages.mo
-
+superset_config.py
+superset_config.py_conf
 docker/requirements-local.txt
