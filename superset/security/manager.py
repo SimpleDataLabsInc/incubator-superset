@@ -22,16 +22,13 @@ import logging
 import time
 from typing import Any, Callable, List, Optional, Set, Tuple, TYPE_CHECKING, Union
 
-from flask import redirect, g, flash, request, current_app
 from flask_appbuilder import Model
-from flask_appbuilder._compat import as_unicode
 from flask_appbuilder.security.sqla import models as ab_models
 from flask_appbuilder.security.sqla.manager import SecurityManager
 from flask_appbuilder.security.sqla.models import (
     assoc_permissionview_role,
     assoc_user_role,
 )
-from flask_appbuilder.security.views import AuthRemoteUserView
 from flask_appbuilder.security.views import (
     PermissionModelView,
     PermissionViewModelView,
@@ -39,9 +36,7 @@ from flask_appbuilder.security.views import (
     UserModelView,
     ViewMenuModelView,
 )
-from flask_appbuilder.security.views import expose
 from flask_appbuilder.widgets import ListWidget
-from flask_login import login_user
 from gql import Client, gql
 from gql.transport.requests import RequestsHTTPTransport
 from sqlalchemy import or_
@@ -80,6 +75,7 @@ class SupersetRoleListWidget(ListWidget):
     template = "superset/fab_overrides/list_role.html"
 
     def __init__(self, **kwargs):
+        from flask import current_app
         kwargs["appbuilder"] = current_app.appbuilder
         super().__init__(**kwargs)
 
@@ -201,7 +197,10 @@ class SupersetSecurityManager(SecurityManager):
         :returns: Whether the use can access the FAB permission/view
         """
 
-        user = g.user
+        from flask import _app_ctx_stack
+        a = _app_ctx_stack.top
+        glb = a.g
+        user = glb.user
         if user.is_anonymous:
             return self.is_item_public(permission_name, view_name)
         return self._has_view_access(user, permission_name, view_name)
@@ -441,6 +440,7 @@ class SupersetSecurityManager(SecurityManager):
                 .join(self.role_model)
         )
 
+        from flask import g
         if not g.user.is_anonymous:
             # filter by user id
             view_menu_names = (
@@ -914,6 +914,7 @@ class SupersetSecurityManager(SecurityManager):
         :param table: The table to check against
         :returns: A list of filters.
         """
+        from flask import g
         if hasattr(g, "user") and hasattr(g.user, "id"):
             from superset import db
             from superset.connectors.sqla.models import (
@@ -953,14 +954,9 @@ class SupersetSecurityManager(SecurityManager):
         return ids
 
 
-
-
-
 class MetagraphClient:
 
-    def __init__(self, user_model):
-        from flask_appbuilder.security.sqla.models import User
-        self.user_model = user_model if user_model else User
+    def __init__(self, app):
         from superset import conf
         metagraph_transport = RequestsHTTPTransport(
             url=conf["METAGRAPH_URL"],
@@ -977,6 +973,8 @@ class MetagraphClient:
         return date
 
     def query(self, token):
+        from superset import security_manager as sm
+        self.user_model = sm.user_model
         query = gql('''{
           User(token: "%s") {
           _id
@@ -990,7 +988,6 @@ class MetagraphClient:
             }
           }
         }''' % token)
-        print(dir(MetagraphClient.datamodel))
         try:
             value = self.client.execute(query)
             user = value["User"]
@@ -999,62 +996,113 @@ class MetagraphClient:
             token, expires = token["token"], token["expires"]
             now = int(time.time() * 1000)
             if expires > now:
-                if self.manager:
-                    self.manager.log.info("Valid User Found")
+                logger.info("Valid User Found")
                 return self.user_model(id=user["_id"], username=token, email=user["email"],
-                                       first_name=user["firstName"], last_name=user["lastName"], active=True)
+                                       first_name=user["firstName"], last_name=user["lastName"], active=True,
+                                       password=token)
             else:
-                if self.manager:
-                    self.manager.log.info("User Token Expired")
+                logger.info("User Token Expired")
                 return None
         except Exception as e:
             print(e)
             return None
 
 
-class ProphecyRemoteUserView(AuthRemoteUserView):
-    # Leave blank
-    login_template = ''
+# class ProphecyRemoteUserView(AuthRemoteUserView):
+#     # Leave blank
+#     login_template = ''
+#
+#     def add_role_if_missing(self, sm, user_id, role_name):
+#         found_role = sm.find_role(role_name)
+#         session = sm.get_session
+#         user = session.query(sm.user_model).get(user_id)
+#         if found_role and found_role not in user.roles:
+#             user.roles += [found_role]
+#             session.commit()
+#
+#     @expose('/login/', methods=['GET', 'POST'])
+#     def login(self):
+#         # headers
+#         token = request.headers.get("X-AUTH-TOKEN")
+#         # Flushing flash message "Access is denied"
+#         # if web_session and '_flashes' in web_session:
+#         #     web_session.pop('_flashes')
+#         from flask import current_app, g
+#         sm = self.appbuilder.sm
+#         session = sm.get_session
+#         guser = getattr(g, "user") if g and hasattr(g, "user") else None
+#         if guser is not None and guser.is_authenticated:
+#             return redirect(self.redirect_url())
+#         if hasattr(g, "user") and hasattr(g.user, "username"):
+#             if g.user.username == token:
+#                 logging.info("REMOTE_USER user already logged")
+#                 return g.user
+#             else:
+#                 sm.logout_user()
+#
+#         db_user = session.query(sm.user_model).filter_by(username=token).first()
+#         role = sm.find_role("gamma") or sm.find_role("Gamma")
+#         roles = [v.name for v in db_user.roles]
+#         role_name = role.name
+#         if db_user and not db_user.is_active:
+#             return (
+#                 "Your account is not activated, "
+#                 "ask an admin to check the 'Is Active?' box in your "
+#                 "user profile")
+#         remote_user = None
+#         if token:
+#             remote_user = self.appbuilder.sm.auth_user_remote_user(token)
+#             if remote_user is None:
+#                 flash(as_unicode(self.invalid_login_message), 'warning')
+#         valid_role = role_name not in roles
+#         if db_user is None and token:
+#             user = sm.add_user(
+#                 username=remote_user.username,
+#                 first_name=remote_user.first_name,
+#                 last_name=remote_user.last_name,
+#                 email=remote_user.email,
+#                 role=role)
+#             msg = ("Welcome to my App, {}".format(token))
+#             flash(as_unicode(msg), 'info')
+#         elif valid_role:
+#             user = session.query(sm.user_model).get((db_user or remote_user).id)
+#             user.roles += [role]
+#             session.commit()
+#         elif db_user is not None:
+#             user = db_user
+#         db_user = user
+#         self.add_role_if_missing(sm, user.id, 'Public')
+#         self.add_role_if_missing(sm, user.id, 'sql_lab')
+#
+#         # g.user = session.query(sm.user_model).get((db_user or remote_user).id)
+#         logged_in = login_user(user)
+#         logger.info("User Logged In: %s" % logged_in)
+#         redirect_url = self.appbuilder.get_url_for_index
+#         return redirect(redirect_url)
+#
+#
+# class ProphecySecurityManager(SupersetSecurityManager):
+#     authremoteuserview = ProphecyRemoteUserView
+#     from flask_appbuilder.security.sqla.models import User
+#     user_model = User
+#
+#     def __init__(self, appbuilder):
+#         super(ProphecySecurityManager, self).__init__(appbuilder)
+#         logger.info("Running Prophecy Superset Security Manager")
+#         self.client = MetagraphClient(self.user_model)
+#
+#     def find_user(self, username=None, email=None):
+#         logger.info("Request to find User: %s" % username)
+#         logger.info("Auth Reg: %s" % self.auth_user_registration)
+#         return self.client.query(username)
+# Apache superset REMOTE_USER authentication
+# https://superset.incubator.apache.org/installation.html#middleware
 
-    @expose('/login/')
-    def login(self):
-        # headers
-        token = request.headers.get("X-AUTH-TOKEN")
-        # username = request.headers.get('HTTP_PROXY_REMOTE_USER')
-        if g.user is not None and g.user.is_authenticated:
-            return redirect(self.appbuilder.get_url_for_index)
+# Define AUTH_TYPE
+# AUTH_TYPE = AUTH_REMOTE_USER
 
-        sm = self.appbuilder.sm
-        session = sm.get_session
-        user = session.query(sm.user_model).filter_by(username=token).first()
-        if user is None and token:
-            msg = ("User not allowed, {}".format(token))
-            flash(as_unicode(msg), 'error')
-            return redirect(self.appbuilder.get_url_for_login)
-
-        if token:
-            user = self.appbuilder.sm.auth_user_remote_user(token)
-            if user is None:
-                flash(as_unicode(self.invalid_login_message), 'warning')
-            else:
-                login_user(user)
-        else:
-            flash(as_unicode(self.invalid_login_message), 'warning')
-
-        return redirect(self.appbuilder.get_url_for_index)
+# Allow users to auto register and be assigned to Remote role
+# AUTH_USER_REGISTRATION = True
+# AUTH_USER_REGISTRATION_ROLE = "Remote"
 
 
-class ProphecySecurityManager(SupersetSecurityManager):
-    authremoteuserview = ProphecyRemoteUserView
-    from flask_appbuilder.security.sqla.models import User
-    user_model = User
-
-    def __init__(self, appbuilder):
-        super(ProphecySecurityManager, self).__init__(appbuilder)
-        self.client = MetagraphClient(self)
-
-    def find_user(self, username=None, email=None):
-        return self.client.query(username)
-
-
-CUSTOM_SECURITY_MANAGER = ProphecySecurityManager
