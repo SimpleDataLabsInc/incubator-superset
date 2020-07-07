@@ -61,6 +61,7 @@ const defaultProps = {
 export default class TableSelector extends React.PureComponent {
   constructor(props) {
     super(props);
+    console.log(props)
     this.state = {
       schemaLoading: false,
       schemaOptions: [],
